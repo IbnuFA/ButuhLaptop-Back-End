@@ -1,0 +1,154 @@
+// Create User
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "emaildummy@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "user"
+}
+
+###
+// Create User
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "first_name": "Tes",
+    "last_name": "Register",
+    "email": "emaildummy@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "user"
+}
+
+###
+// get All User
+GET http://localhost:5000/users
+
+###
+// get User by ID
+GET http://localhost:5000/users/73b2a651-9e01-4552-a714-84c67ef15e1d
+
+###
+// update User by ID
+PATCH  http://localhost:5000/users/2d5b1947-e0a0-41a2-8a7f-594d59a9373e
+Content-Type: application/json
+
+{
+    "first_name": "Bronya",
+    "last_name": "Zaychik Updated 2",
+    "email": "bunnycute321@gmail.com",
+    "password": "",
+    "confirmPassword": "",
+    "role": "user"
+}
+
+###
+// Delete User by ID
+DELETE   http://localhost:5000/users/2d5b1947-e0a0-41a2-8a7f-594d59a9373e
+
+###
+//Login
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678"
+}
+
+###
+//Get User Login
+GET http://localhost:5000/authusers
+
+###
+//logout
+DELETE  http://localhost:5000/logout
+
+
+//PRODUCTS
+###
+// Create Products
+POST http://localhost:5000/products
+Content-Type: application/json
+
+{
+    "product_name": "Laptop coba 4",
+    "product_description": "Intel Collab, RAM 16GB",
+    "category": "gaming",
+    "price": "1500000",
+    "stock": "15",
+    "product_image": "qqq"
+}
+
+###
+// get All Product
+GET http://localhost:5000/products
+
+###
+// get Product by ID
+GET http://localhost:5000/products/c380ed6c-4897-46ea-9be9-6ebfd7591387
+
+###
+// get Update Product
+PATCH  http://localhost:5000/products/4b80df7a-5ad4-431b-bdf4-843fcfc7d040
+Content-Type: application/json
+
+{
+    "product_name": "Asus ROG",
+    "product_description": "Intel I7, RAM 16GB",
+    "price": "2000000",
+    "stock": "5",
+    "product_image": "eeee"
+}
+
+###
+// Delete product by ID
+DELETE   http://localhost:5000/products/769dfe6e-8e77-4449-9eb4-d12dccdec7f4
+
+###
+// Create Feedbacks
+POST http://localhost:5000/feedbacks
+Content-Type: application/json
+
+{
+    "feedback": "UI user bisa dibagusin lagi",
+    "rate": "4"
+}
+
+###
+// get All Feedbacks
+GET http://localhost:5000/feedbacks
+
+###
+// get All Feedbacks
+GET http://localhost:5000/feedbacks/4cdc80a4-0a6c-4611-9c70-24a3257dfade
+
+###
+// get Update Feedbacks
+PATCH http://localhost:5000/feedbacks/67b5f976-58ec-498f-9836-9835f9b52f0c
+Content-Type: application/json
+
+{
+    "feedback": "UI user bisa dibagusin lagi 123",
+    "rate": "4"
+}
+
+###
+// Delete feedback by ID
+DELETE   http://localhost:5000/feedbacks/67b5f976-58ec-498f-9836-9835f9b52f0c
+
+### 
+//Keranjang
+POST http://localhost:5000/createkeranjang
+Content-Type: application/json
+
+{
+    "user_id": "73b2a651-9e01-4552-a714-84c67ef15e1d",
+    "product_id": "c380ed6c-4897-46ea-9be9-6ebfd7591387",
+    "quantity": "1"
+}

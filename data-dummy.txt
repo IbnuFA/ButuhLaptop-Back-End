@@ -1,0 +1,26 @@
+{
+    {
+        "first_name": "Ibnu",
+        "last_name": "Fauzan Affifudin",
+        "email": "fauzanibnu343@gmail.com",
+        "password": "12345678",
+        "confirmPassword": "12345678",
+        "role": "admin"
+    },
+    {
+        "first_name": "Bronya",
+        "last_name": "Zaychik",
+        "email": "touchme0709@gmail.com",
+        "password": "12345678",
+        "confirmPassword": "12345678",
+        "role": "user"
+    },
+    {
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "emaildummy@gmail.com",
+        "password": "12345678",
+        "confirmPassword": "12345678",
+        "role": "user"
+    },
+}
