@@ -11,6 +11,7 @@ import Products from "./models/ProductModel.js";
 import Keranjangs from "./models/KeranjangModel.js";
 import Feedbacks from "./models/FeedbackModel.js";
 import Checkouts from "./models/CheckoutModel.js";
+import Carts from "./models/CartModel.js";
 
 //import route
 import UsersRoute from "./routes/UserRoutes.js"
@@ -18,6 +19,7 @@ import ProductRoute from "./routes/ProductRoutes.js"
 import KeranjangRoute from "./routes/KeranjangRoutes.js"
 import FeedbacksRoute from "./routes/FeedbackRoutes.js";
 import CheckoutRoute from "./routes/CheckoutRoutes.js"
+import CartRoute from "./routes/CartRoute.js"
 
 dotenv.config()
 
