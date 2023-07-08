@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 
-const db = new Sequelize('butuhlaptop_db', 'root', 'root', {
+const db = new Sequelize('butuhlaptop_db', 'root', '', {
     host: "localhost",
     dialect: "mysql"
 });
