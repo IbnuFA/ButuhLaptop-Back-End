@@ -1,6 +1,3 @@
-import Checkouts from "../models/CheckoutModel.js"
-import Users from "../models/UserModel.js"
-import Products from "../models/ProductModel.js"
 
 export const getCheckouts  = (req, res) => {
     //tes

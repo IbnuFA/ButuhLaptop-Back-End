@@ -1,13 +1,13 @@
 import Sequelize  from "sequelize";
 import db from "../config/Database.js";
-import Users from "./UserModel.js";
-import CheckoutProducts from "./CheckoutProductsModel.js";
-import Keranjangs from "./KeranjangModel.js";
+import Cart  from "./CartModel.js";
+// import Users from "./UserModel.js";
+
 
 const Datatypes = Sequelize.DataTypes
 
-const Checkouts = db.define('checkout', {
-    checkout_id:{
+export const Checkout = db.define('checkout', {
+    id:{
         type: Datatypes.STRING,
         defaultValue: Datatypes.UUIDV4,
         allowNull: false,
@@ -28,10 +28,7 @@ const Checkouts = db.define('checkout', {
 });
 
 //Relasi Table 
-Users.hasMany(Checkouts)
-Checkouts.belongsTo(Users)
+Cart.hasOne(Checkout);
+Checkout.belongsTo(Cart);
 
-Keranjangs.hasOne(Checkouts)
-Checkouts.belongsTo(Keranjangs)
-
-export default Checkouts
+export default Checkout;

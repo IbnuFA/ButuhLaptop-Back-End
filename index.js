@@ -5,12 +5,12 @@ import dotenv from "dotenv"
 import db from "./config/Database.js";
 import SequelizeStore from "connect-session-sequelize"
 
-//import models
-import Users from "./models/UserModel.js";
-import Products from "./models/ProductModel.js";
-import Keranjangs from "./models/KeranjangModel.js";
+//import model
+import User from "./models/UserModel.js";
+import Product from "./models/ProductModel.js";
+import Cart from "./models/CartModel.js";
 import Feedbacks from "./models/FeedbackModel.js";
-import Checkouts from "./models/CheckoutModel.js";
+import Checkout from "./models/CheckoutModel.js";
 
 //import route
 import UsersRoute from "./routes/UserRoutes.js"
@@ -18,6 +18,7 @@ import ProductRoute from "./routes/ProductRoutes.js"
 import KeranjangRoute from "./routes/KeranjangRoutes.js"
 import FeedbacksRoute from "./routes/FeedbackRoutes.js";
 import CheckoutRoute from "./routes/CheckoutRoutes.js"
+import CartItem from "./models/CartItemModel.js";
 
 dotenv.config()
 
@@ -34,13 +35,19 @@ const store = new sessionStore({
 try {
     //connect db
     await db.authenticate();
-
+    
     //connect and create table
-    await Users.sync();
-    await Feedbacks.sync()
-    await Products.sync()
-    await Keranjangs.sync()
-    await Checkouts.sync()
+    await db.sync({force: true});
+ 
+    //opsi force: true bakal maksa sequelize utk menyamakan keseluruhan field db
+
+    await User.sync();
+    await Product.sync();
+    await Cart.sync();
+    await CartItem.sync();
+    await Checkout.sync();
+    await Feedbacks.sync();
+    //awal2 tetap harus ditulis satu per satu
 
     //table relation
     // Users.Products = Users.hasMany(Products)

@@ -1,11 +1,11 @@
-import Users from "../models/UserModel.js";
+import User from "../models/UserModel.js"
 
 //cek user login atau belum
 export const verifyUser = async (req, res, next) => {
     if(!req.session.userId){
         return res.status(401).json({msg: "Mohon Login Terlebih Dahulu!"})
     } else {
-        const user = await Users.findOne({
+        const user = await User.findOne({
             where: {
                 uuid: req.session.userId
             }

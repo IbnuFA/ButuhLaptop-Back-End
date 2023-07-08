@@ -1,17 +1,17 @@
-import Products from "../models/ProductModel.js"
-import Users from "../models/UserModel.js"
+import Product from "../models/ProductModel.js";
+import User from "../models/UserModel.js";
 
 export const getProducts  = async(req, res) => {
     try {
-        const response = await Products.findAll({
+        const response = await Product.findAll({
             // relasi user
-            attributes: ['product_id', 'product_name', 'product_description', 'category', 'price', 'stock', 'product_image'],
+            attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image'],
             // user bisa melihat daya yang dia inputkan
             // where: {
             //     UserId: req.UserId
             // },
             include:[{
-                model: Users
+                model: User
             }]
         })
         res.status(200).json(response);

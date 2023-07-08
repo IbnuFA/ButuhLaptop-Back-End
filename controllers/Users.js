@@ -1,9 +1,9 @@
-import Users from "../models/UserModel.js"
+import User from "../models/UserModel.js"
 import argon2 from "argon2"
 
 export const getUsers  = async(req, res) => {
     try {
-        const response = await Users.findAll({
+        const response = await User.findAll({
             attributes: ['uuid', 'first_name', 'last_name', 'email', 'role' ]
         })
         res.status(200).json(response)

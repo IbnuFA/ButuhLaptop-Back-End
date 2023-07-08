@@ -1,11 +1,10 @@
 import Sequelize  from "sequelize";
 import db from "../config/Database.js";
-import Users from "./UserModel.js";
 
 const Datatypes = Sequelize.DataTypes
 
-const Products = db.define('products', {
-    product_id:{
+const Product = db.define('product', {
+    id:{
         type: Datatypes.STRING,
         defaultValue: Datatypes.UUIDV4,
         allowNull: false,
@@ -14,7 +13,7 @@ const Products = db.define('products', {
         },
         primaryKey: true,
     },
-    product_name:{
+    name:{
         type: Datatypes.STRING,
         allowNull: false,
         validate:{
@@ -22,7 +21,7 @@ const Products = db.define('products', {
             len: [3, 100]
         }
     },
-    product_description:{
+    description:{
         type: Datatypes.CHAR,
         allowNull: false,
         validate:{
@@ -43,7 +42,7 @@ const Products = db.define('products', {
             notEmpty: true,
         }
     },
-    product_image:{
+    image:{
         type: Datatypes.BLOB,   
         allowNull: true,
         validate:{
@@ -57,12 +56,10 @@ const Products = db.define('products', {
             notEmpty: true,
         }
     },
-}, {
-    freezeTableName: true,
 });
 
 //Relasi Table 
 // Users.hasMany(Products)
 // Products.belongsTo(Users, {foreignKey: 'user_id'})
 
-export default Products
+export default Product;
