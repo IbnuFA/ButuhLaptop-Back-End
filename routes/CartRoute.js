@@ -8,6 +8,8 @@ import {
     deleteCart,
 } from "../controllers/Carts.js";
 
+import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
+
 const router = express.Router();
 
 router.get('/Cart/test', (req, res) => {

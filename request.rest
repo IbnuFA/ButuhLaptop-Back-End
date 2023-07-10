@@ -169,13 +169,25 @@ Content-Type: application/json
 // Delete feedback by ID
 DELETE   http://localhost:5000/feedbacks/67b5f976-58ec-498f-9836-9835f9b52f0c
 
+
+
+//CART
+
 ### 
-//Keranjang
+//Create Cart
 POST http://localhost:5000/createkeranjang
 Content-Type: application/json
 
 {
-    "user_id": "73b2a651-9e01-4552-a714-84c67ef15e1d",
-    "product_id": "c380ed6c-4897-46ea-9be9-6ebfd7591387",
-    "quantity": "1"
+    "userUuid": "3384f64f-db77-48a1-9a75-c0235543fd4f",
+    "productId": "b67ca7d5-e77c-448c-b1bf-08866c5db8ea",
+    "quantity": "5"
 }
+
+###
+// get All Cart
+GET http://localhost:5000/keranjang
+
+###
+// get All Cart
+GET http://localhost:5000/keranjang/4bceea87-3fec-4a85-aaea-12b1e518375b
