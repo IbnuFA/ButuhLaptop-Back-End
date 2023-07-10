@@ -52,9 +52,50 @@ export const createKeranjang  = async(req, res) => {
 }
 
 export const updateKeranjang  = async(req, res) => {
-    //tes
+    const keranjang = await Cart.findOne({
+        where:{
+            id: req.params.id
+        }
+    })
+
+    if(!keranjang){
+        return res.status(404).json({msg: "keranjang tidak ditemukan"})
+    }else{
+        const {quantity} = req.body
+        try {
+            await Cart.update({
+                quantity: quantity
+            },{
+                where:{
+                    id: keranjang.id
+                }
+            })
+            res.status(201).json({msg: "keranjang telah diupdate"})
+        } catch (error) {
+            res.status(400).json({msg: error.message})
+        }
+    }
 }
 
 export const deleteKeranjang  = async(req, res) => {
-    //tes
+    const keranjang = await Cart.findOne({
+        where:{
+            id: req.params.id
+        }
+    })
+
+    if(!keranjang){
+        return res.status(404).json({msg: "keranjang tidak ditemukan"})
+    }else{
+        try {
+            await Cart.destroy({
+                where:{
+                    id: keranjang.id
+                }
+            })
+            res.status(201).json({msg: "keranjang telah dihapus"})
+        } catch (error) {
+            res.status(400).json({msg: error.message})
+        }
+    }
 }

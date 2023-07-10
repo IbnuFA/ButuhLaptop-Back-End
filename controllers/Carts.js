@@ -33,6 +33,7 @@ export const createCart = async(req, res) => {
         res.status(201).json({msg: "Cart telah ditambahkan"})
     } catch (error) {
         res.status(400).json({msg: error.message})
+        console.log(error);
     }
 }
 

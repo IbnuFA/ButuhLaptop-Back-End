@@ -191,3 +191,15 @@ GET http://localhost:5000/keranjang
 ###
 // get All Cart
 GET http://localhost:5000/keranjang/4bceea87-3fec-4a85-aaea-12b1e518375b
+
+### Update Cart
+PATCH http://localhost:5000/keranjang/4bceea87-3fec-4a85-aaea-12b1e518375b
+Content-Type: application/json
+
+{
+    "quantity": "69"
+}
+
+// Delete feedback by ID
+###
+DELETE   http://localhost:5000/keranjang/caa9de99-0d71-46bf-ba9e-675528c6a9c5

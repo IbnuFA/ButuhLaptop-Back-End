@@ -55,7 +55,7 @@ export const createProducts  = async(req, res) => {
 }
 
 export const updateProducts  = async(req, res) => {
-    const product = await Products.findOne({
+    const product = await Product.findOne({
         where:{
             id: req.params.id
         }
@@ -66,7 +66,7 @@ export const updateProducts  = async(req, res) => {
     } else{
         const {name, description, category, price, stock, image } = req.body
         try {
-            await Products.update({
+            await Product.update({
                 name: name,
                 description: description,
                 category: category,
@@ -86,7 +86,7 @@ export const updateProducts  = async(req, res) => {
 }
 
 export const deleteProducts  = async(req, res) => {
-    const product = await Products.findOne({
+    const product = await Product.findOne({
         where:{
             id: req.params.id
         }
@@ -96,7 +96,7 @@ export const deleteProducts  = async(req, res) => {
         return res.status(404).json({msg: "Product tidak ditemukan"})
     } else {
         try {
-            await Products.destroy({
+            await Product.destroy({
                 where: {
                     id: product.id
                 }
