@@ -1,7 +1,7 @@
 import User from "../models/UserModel.js"
 import argon2 from "argon2"
 
-export const getUsers  = async(req, res) => {
+export const getUser  = async(req, res) => {
     try {
         const response = await User.findAll({
             attributes: ['uuid', 'first_name', 'last_name', 'email', 'role' ]
@@ -13,9 +13,9 @@ export const getUsers  = async(req, res) => {
     }
 }
 
-export const getUsersbyId  = async(req, res) => {
+export const getUserbyId  = async(req, res) => {
     try {
-        const response = await Users.findOne({
+        const response = await User.findOne({
             attributes: ['uuid', 'first_name', 'last_name', 'email', 'role'],
             where:{
                 uuid: req.params.id
@@ -28,7 +28,7 @@ export const getUsersbyId  = async(req, res) => {
     }
 }
 
-export const createUsers  = async(req, res) => {
+export const createUser  = async(req, res) => {
     const {first_name, last_name, email, password, confirmPassword, role} = req.body
     if(password !== confirmPassword) {
         return res.status(400).json({msg: "Password dan Confirm Password tidak cocok"})
@@ -36,7 +36,7 @@ export const createUsers  = async(req, res) => {
         const hassPassword = await argon2.hash(password)
 
         try {
-            await Users.create({
+            await User.create({
                 first_name: first_name,
                 last_name: last_name,
                 email: email,
@@ -50,8 +50,8 @@ export const createUsers  = async(req, res) => {
     }
 }
 
-export const updateUsers = async(req, res) => {
-    const user = await Users.findOne({
+export const updateUser = async(req, res) => {
+    const user = await User.findOne({
         where:{
             uuid: req.params.id
         }
@@ -74,7 +74,7 @@ export const updateUsers = async(req, res) => {
             return res.status(400).json({msg: "Password dan Confirm Password tidak cocok"})
         } else {
             try {
-                await Users.update({
+                await User.update({
                     first_name: first_name,
                     last_name: last_name,
                     email: email,
@@ -94,8 +94,8 @@ export const updateUsers = async(req, res) => {
     // ini dihapus, error
 }
 
-export const deleteUsers  = async(req, res) => {
-    const user = await Users.findOne({
+export const deleteUser  = async(req, res) => {
+    const user = await User.findOne({
         where:{
             uuid: req.params.id
         }
@@ -105,7 +105,7 @@ export const deleteUsers  = async(req, res) => {
         return res.status(404).json({msg: "User tidak ditemukan"})
     } else {
         try {
-            await Users.destroy({
+            await User.destroy({
                 where: {
                     id: user.id
                 }
@@ -118,7 +118,7 @@ export const deleteUsers  = async(req, res) => {
 }
 
 export const Login  = async(req, res) => {
-    const user = await Users.findOne({
+    const user = await User.findOne({
         where:{
             email: req.body.email
         }
@@ -147,7 +147,7 @@ export const getUserLogin = async (req, res) => {
     if(!req.session.userId){
         return res.status(401).json({msg: "Mohon Login Terlebih Dahulu!"})
     } else {
-        const user = await Users.findOne({
+        const user = await User.findOne({
             attributes: ['uuid', 'first_name', 'last_name', 'email', 'role'],
             where: {
                 uuid: req.session.userId

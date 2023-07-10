@@ -37,7 +37,7 @@ try {
     await db.authenticate();
     
     //connect and create table
-    await db.sync({force: true});
+    // await db.sync();
  
     //opsi force: true bakal maksa sequelize utk menyamakan keseluruhan field db
 
@@ -49,12 +49,12 @@ try {
     await Feedbacks.sync();
     //awal2 tetap harus ditulis satu per satu
 
-    //table relation
+    // table relation
     // Users.Products = Users.hasMany(Products)
     // Users.Keranjangs = Users.hasMany(Keranjangs)
     // Products.Keranjangs = Products.hasOne(Keranjangs)
     // Users.Checkouts = Users.hasMany(Checkouts)
-    // Keranjangs.Checkouts = Keranjangs.hasOne(Checkouts)
+    // Keranjangs.Checkouts = Keranjangs.hasOne(Checkouts),
 
     console.log('Database Connected!');
 } catch (err) {

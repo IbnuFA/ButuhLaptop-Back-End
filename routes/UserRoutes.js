@@ -1,14 +1,14 @@
 import express from "express";
 
 import {
-    getUsers,
-    getUsersbyId,
-    createUsers,
-    updateUsers,
+    getUser,
+    getUserbyId,
+    createUser,
+    updateUser,
     Login,
     Logout,
     getUserLogin,
-    deleteUsers
+    deleteUser
 } from "../controllers/Users.js"
 
 import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
@@ -24,15 +24,15 @@ router.get('/users/test', (req, res) => {
   res.send("Test Router User")
 }) 
 
-router.get('/users', verifyUser, adminOnly, getUsers);
-router.get('/users/:id', verifyUser, adminOnly, getUsersbyId);
-router.post('/users', verifyUser, adminOnly, createUsers);
-router.patch('/users/:id', verifyUser, adminOnly, updateUsers);
-router.delete('/users/:id', verifyUser, adminOnly, deleteUsers);
+router.get('/users', verifyUser, adminOnly, getUser);
+router.get('/users/:id', verifyUser, adminOnly, getUserbyId);
+router.post('/users', verifyUser, adminOnly, createUser);
+router.patch('/users/:id', verifyUser, adminOnly, updateUser);
+router.delete('/users/:id', verifyUser, adminOnly, deleteUser);
 
 //Auth Route
 router.get('/authusers', getUserLogin);;
-router.post('/register', verifyUser, adminOnly, createUsers);
+router.post('/register', createUser);
 router.post('/login', Login);
 router.delete('/logout', Logout);
 

@@ -24,9 +24,9 @@ export const getProducts  = async(req, res) => {
 export const getProductsbyId  = async(req, res) => {
     try {
         const response = await Products.findOne({
-            attributes: ['product_id', 'product_name', 'product_description', 'category', 'price', 'stock', 'product_image'],
+            attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image'],
             where:{
-                product_id: req.params.id
+                id: req.params.id
             }
         })
         res.status(200).json(response)
@@ -37,15 +37,15 @@ export const getProductsbyId  = async(req, res) => {
 }
 
 export const createProducts  = async(req, res) => {
-    const {product_name, product_description, category, price, stock, product_image } = req.body;
+    const {name, description, category, price, stock, image } = req.body;
     try {
-        await Products.create({
-            product_name: product_name,
-            product_description: product_description,
+        await Product.create({
+            name: name,
+            description: description,
             category: category,
             price: price,
             stock: stock,
-            product_image: product_image,
+            image: image,
             userId: req.userId
         })
         res.status(201).json({msg: "Produk telah Ditambahkan"})
@@ -57,22 +57,22 @@ export const createProducts  = async(req, res) => {
 export const updateProducts  = async(req, res) => {
     const product = await Products.findOne({
         where:{
-            product_id: req.params.id
+            id: req.params.id
         }
     })
 
     if(!product){
         return res.status(404).json({msg: "Products tidak ditemukan"})
     } else{
-        const {product_name, product_description, category, price, stock, product_image } = req.body
+        const {name, description, category, price, stock, image } = req.body
         try {
             await Products.update({
-                product_name: product_name,
-                product_description: product_description,
+                name: name,
+                description: description,
                 category: category,
                 price: price,
                 stock: stock,
-                product_image: product_image
+                image: image
             },{
                 where:{
                     id: product.id
@@ -88,7 +88,7 @@ export const updateProducts  = async(req, res) => {
 export const deleteProducts  = async(req, res) => {
     const product = await Products.findOne({
         where:{
-            product_id: req.params.id
+            id: req.params.id
         }
     })
 

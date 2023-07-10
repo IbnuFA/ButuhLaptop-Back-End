@@ -12,17 +12,17 @@ export const getKeranjangbyId  = async(req, res) => {
 }
 
 export const createKeranjang  = async(req, res) => {
-    const {user_id, product_id, quantity} = req.body;
-    try {
-        await Cart.create({
-            user_id: user_id,
-            product_id: product_id,
-            quantity: quantity,
-        })
-        res.status(201).json({msg: "Keranjang telah ditambahkan"})
-    } catch (error) {
-        res.status(400).json({msg: error.message})
-    }
+    // const {user_id, product_id, quantity} = req.body;
+    // try {
+    //     await Cart.create({
+    //         user_id: user_id,
+    //         product_id: product_id,
+    //         quantity: quantity,
+    //     })
+    //     res.status(201).json({msg: "Keranjang telah ditambahkan"})
+    // } catch (error) {
+    //     res.status(400).json({msg: error.message})
+    // }
 }
 
 export const updateKeranjang  = async(req, res) => {

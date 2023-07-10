@@ -1,5 +1,6 @@
 import Sequelize  from "sequelize";
 import db from "../config/Database.js";
+import User from "./UserModel.js";
 
 const Datatypes = Sequelize.DataTypes
 
@@ -59,7 +60,7 @@ const Product = db.define('product', {
 });
 
 //Relasi Table 
-// Users.hasMany(Products)
-// Products.belongsTo(Users, {foreignKey: 'user_id'})
+User.hasMany(Product)
+Product.belongsTo(User)
 
 export default Product;

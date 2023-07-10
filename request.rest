@@ -3,27 +3,71 @@ POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "emaildummy@gmail.com",
+    "first_name": "Ibnu",
+    "last_name": "Fauzan Affifudin",
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "admin"
+}
+
+###
+// Create Admin
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+   "first_name": "Ibnu",
+    "last_name": "Fauzan Affifudin",
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "admin"
+}
+
+###
+//Login Admin
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678"
+}
+
+###
+// Create user
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "first_name": "Bronya",
+    "last_name": "Zaychik",
+    "email": "touchme0709@gmail.com",
     "password": "12345678",
     "confirmPassword": "12345678",
     "role": "user"
 }
 
 ###
-// Create User
-POST http://localhost:5000/register
+//Login user
+POST http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "first_name": "Tes",
-    "last_name": "Register",
-    "email": "emaildummy@gmail.com",
-    "password": "12345678",
-    "confirmPassword": "12345678",
-    "role": "user"
+    "email": "touchme0709@gmail.com",
+    "password": "12345678"
 }
+
+
+###
+//Get User Login
+GET http://localhost:5000/authusers
+
+###
+//logout
+DELETE  http://localhost:5000/logout
+
 
 ###
 // get All User
@@ -51,24 +95,6 @@ Content-Type: application/json
 // Delete User by ID
 DELETE   http://localhost:5000/users/2d5b1947-e0a0-41a2-8a7f-594d59a9373e
 
-###
-//Login
-POST http://localhost:5000/login
-Content-Type: application/json
-
-{
-    "email": "fauzanibnu343@gmail.com",
-    "password": "12345678"
-}
-
-###
-//Get User Login
-GET http://localhost:5000/authusers
-
-###
-//logout
-DELETE  http://localhost:5000/logout
-
 
 //PRODUCTS
 ###
@@ -77,12 +103,12 @@ POST http://localhost:5000/products
 Content-Type: application/json
 
 {
-    "product_name": "Laptop coba 4",
-    "product_description": "Intel Collab, RAM 16GB",
+    "name": "Laptop coba 4",
+    "description": "Intel Collab, RAM 16GB",
     "category": "gaming",
     "price": "1500000",
     "stock": "15",
-    "product_image": "qqq"
+    "image": "qqq"
 }
 
 ###
@@ -99,16 +125,17 @@ PATCH  http://localhost:5000/products/4b80df7a-5ad4-431b-bdf4-843fcfc7d040
 Content-Type: application/json
 
 {
-    "product_name": "Asus ROG",
-    "product_description": "Intel I7, RAM 16GB",
+    "name": "Asus ROG",
+    "description": "Intel I7, RAM 16GB",
     "price": "2000000",
     "stock": "5",
-    "product_image": "eeee"
+    "image": "eeee"
 }
 
 ###
 // Delete product by ID
 DELETE   http://localhost:5000/products/769dfe6e-8e77-4449-9eb4-d12dccdec7f4
+
 
 ###
 // Create Feedbacks
