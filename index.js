@@ -81,7 +81,7 @@ app.use(express.json())
 app.use(UsersRoute)
 app.use(ProductRoute)
 app.use(CartRoute)
-// app.use(CartItemRoute)
+app.use(CartItemRoute)
 app.use(FeedbacksRoute)
 app.use(CheckoutRoute)
 
