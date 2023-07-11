@@ -41,17 +41,22 @@ export const getCartItembyCartId = async(req, res) => {
 }
 
 export const createCartItem = async(req, res) => {
-    const {productId, cartId} = req.body;
-    try {
-        await CartItem.create({
-            productId: productId,
-            cartId: cartId
-        })
-        res.status(201).json({msg: "Produk telah ditambahkan ke Cart"})
-    } catch (error) {
-        res.status(400).json({msg: error.message})
-        console.log(error);
-    }
+    return(
+        {
+            "first_name": "Testing",
+        }
+    )
+    // const {productId, cartId} = req.body;
+    // try {
+    //     await CartItem.create({
+    //         productId: productId,
+    //         cartId: cartId
+    //     })
+    //     res.status(201).json({msg: "Produk telah ditambahkan ke Cart"})
+    // } catch (error) {
+    //     res.status(400).json({msg: error.message})
+    //     console.log(error);
+    // }
 }
 
 export const updateCartItem = async(req, res) => {
