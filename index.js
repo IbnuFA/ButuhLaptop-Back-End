@@ -19,6 +19,7 @@ import ProductRoute from "./routes/ProductRoutes.js"
 import FeedbacksRoute from "./routes/FeedbackRoutes.js";
 import CheckoutRoute from "./routes/CheckoutRoutes.js"
 import CartRoute from "./routes/CartRoute.js"
+// import CartItemRoute from "./routes/CartItemRoute.js"
 
 dotenv.config()
 
@@ -38,16 +39,16 @@ try {
     
     //connect and create table
 
-    // await db.sync();
+    await db.sync();
     //opsi force: true bakal maksa sequelize utk menyamakan keseluruhan field db
     
     //awal2 tetap harus ditulis satu per satu
-    await User.sync();
-    await Product.sync();
-    await Cart.sync();
-    await CartItem.sync();
-    await Checkout.sync();
-    await Feedbacks.sync();
+    // await User.sync();
+    // await Product.sync();
+    // await Cart.sync();
+    // await CartItem.sync();
+    // await Checkout.sync();
+    // await Feedbacks.sync();
 
 
     console.log('Database Connected!');
@@ -80,6 +81,7 @@ app.use(express.json())
 app.use(UsersRoute)
 app.use(ProductRoute)
 app.use(CartRoute)
+// app.use(CartItemRoute)
 app.use(FeedbacksRoute)
 app.use(CheckoutRoute)
 
