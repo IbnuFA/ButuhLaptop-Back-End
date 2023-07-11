@@ -175,13 +175,13 @@ DELETE   http://localhost:5000/feedbacks/67b5f976-58ec-498f-9836-9835f9b52f0c
 
 ### 
 //Create Cart
-POST http://localhost:5000/createkeranjang
+POST http://localhost:5000/createcart
 Content-Type: application/json
 
 {
     "userUuid": "3384f64f-db77-48a1-9a75-c0235543fd4f",
     "productId": "b67ca7d5-e77c-448c-b1bf-08866c5db8ea",
-    "quantity": "5"
+    "quantity": "7"
 }
 
 ###
@@ -190,16 +190,16 @@ GET http://localhost:5000/keranjang
 
 ###
 // get All Cart
-GET http://localhost:5000/keranjang/4bceea87-3fec-4a85-aaea-12b1e518375b
+GET http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b
 
 ### Update Cart
-PATCH http://localhost:5000/keranjang/4bceea87-3fec-4a85-aaea-12b1e518375b
+PATCH http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b
 Content-Type: application/json
 
 {
-    "quantity": "69"
+    "quantity": "77"
 }
 
 // Delete feedback by ID
 ###
-DELETE   http://localhost:5000/keranjang/caa9de99-0d71-46bf-ba9e-675528c6a9c5
+DELETE   http://localhost:5000/cart/caa9de99-0d71-46bf-ba9e-675528c6a9c5

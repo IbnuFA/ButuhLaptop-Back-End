@@ -11,14 +11,14 @@ import Product from "./models/ProductModel.js";
 import Cart from "./models/CartModel.js";
 import Feedbacks from "./models/FeedbackModel.js";
 import Checkout from "./models/CheckoutModel.js";
+import CartItem from "./models/CartItemModel.js"
 
 //import route
 import UsersRoute from "./routes/UserRoutes.js"
 import ProductRoute from "./routes/ProductRoutes.js"
-import KeranjangRoute from "./routes/KeranjangRoutes.js"
 import FeedbacksRoute from "./routes/FeedbackRoutes.js";
 import CheckoutRoute from "./routes/CheckoutRoutes.js"
-import CartItem from "./models/CartItemModel.js";
+import CartRoute from "./routes/CartRoute.js"
 
 dotenv.config()
 
@@ -37,24 +37,18 @@ try {
     await db.authenticate();
     
     //connect and create table
-    // await db.sync();
- 
-    //opsi force: true bakal maksa sequelize utk menyamakan keseluruhan field db
 
+    // await db.sync();
+    //opsi force: true bakal maksa sequelize utk menyamakan keseluruhan field db
+    
+    //awal2 tetap harus ditulis satu per satu
     await User.sync();
     await Product.sync();
     await Cart.sync();
     await CartItem.sync();
     await Checkout.sync();
     await Feedbacks.sync();
-    //awal2 tetap harus ditulis satu per satu
 
-    // table relation
-    // Users.Products = Users.hasMany(Products)
-    // Users.Keranjangs = Users.hasMany(Keranjangs)
-    // Products.Keranjangs = Products.hasOne(Keranjangs)
-    // Users.Checkouts = Users.hasMany(Checkouts)
-    // Keranjangs.Checkouts = Keranjangs.hasOne(Checkouts),
 
     console.log('Database Connected!');
 } catch (err) {
@@ -80,19 +74,12 @@ app.use(cors({
     ],
 }))
 
-// app.use(cors({
-//     origin: 'https://localhost:3000',
-//     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-//     preflightContinue: false,
-//     optionsSuccessStatus: 204,
-// }))
-
 app.use(express.json())
 
 //middleware
 app.use(UsersRoute)
 app.use(ProductRoute)
-app.use(KeranjangRoute)
+app.use(CartRoute)
 app.use(FeedbacksRoute)
 app.use(CheckoutRoute)
 
