@@ -7,9 +7,9 @@ import {
     createCartItem,
     updateCartItem,
     deleteCartItem
-} from "../controllers/CartItem";
+} from "../controllers/CartItem.js";
 
-import { verifyUser } from "../middleware/AuthUser";
+import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
 
 const router = express.Router()
 

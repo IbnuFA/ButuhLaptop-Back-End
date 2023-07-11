@@ -19,7 +19,7 @@ import ProductRoute from "./routes/ProductRoutes.js"
 import FeedbacksRoute from "./routes/FeedbackRoutes.js";
 import CheckoutRoute from "./routes/CheckoutRoutes.js"
 import CartRoute from "./routes/CartRoute.js"
-// import CartItemRoute from "./routes/CartItemRoute.js"
+import CartItemRoute from "./routes/CartItemRoute.js"
 
 dotenv.config()
 

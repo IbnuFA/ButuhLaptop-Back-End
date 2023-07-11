@@ -103,7 +103,7 @@ POST http://localhost:5000/products
 Content-Type: application/json
 
 {
-    "name": "Laptop coba 4",
+    "name": "Laptop coba 8",
     "description": "Intel Collab, RAM 16GB",
     "category": "gaming",
     "price": "1500000",
