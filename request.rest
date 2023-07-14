@@ -189,7 +189,7 @@ Content-Type: application/json
 GET http://localhost:5000/cart
 
 ###
-// get All Cart
+// get Cart by Id
 GET http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b
 
 ### Update Cart
@@ -200,7 +200,7 @@ Content-Type: application/json
     "quantity": "77"
 }
 
-// Delete feedback by ID
+// Delete Cart by ID
 ###
 DELETE   http://localhost:5000/cart/caa9de99-0d71-46bf-ba9e-675528c6a9c5
 
