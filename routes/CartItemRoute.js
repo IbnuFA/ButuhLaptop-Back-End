@@ -20,6 +20,7 @@ router.get('/cartitem/test', (req, res) => {
 router.get('/cartItem', getCartItem)
 router.get('/cartItem/id', getCartItembyId)
 router.get('/cartItembyCartId/id', getCartItembyCartId)
+router.get('/cartItembyCartId', getCartItembyCartId)
 router.post('/cartItem', createCartItem)
 router.patch('/cartItem', updateCartItem)
 router.delete('/cartItem', deleteCartItem)

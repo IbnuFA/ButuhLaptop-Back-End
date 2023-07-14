@@ -37,7 +37,7 @@ export const getCartItembyId = async(req, res) => {
 }
 
 export const getCartItembyCartId = async(req, res) => {
-
+    res.send("Test Router getCartItembyCartId")
 }
 
 export const createCartItem = async(req, res) => {

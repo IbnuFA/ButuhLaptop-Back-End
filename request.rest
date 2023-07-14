@@ -221,6 +221,10 @@ Content-Type: application/json
 GET http://localhost:5000/cartItem
 
 ###
+// get All CartItem by CartId NOT DONE
+GET http://localhost:5000/cartItembyCartId
+
+###
 // get All CartItem by Id
 GET http://localhost:5000/cartItem/9993decf-94c3-486c-9ff2-67fd37dbc77b
 
