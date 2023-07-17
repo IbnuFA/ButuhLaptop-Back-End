@@ -1,6 +1,7 @@
 import Sequelize  from "sequelize";
 import db from "../config/Database.js";
 import Cart  from "./CartModel.js";
+import User from "./UserModel.js";
 // import Users from "./UserModel.js";
 
 
@@ -30,5 +31,9 @@ export const Checkout = db.define('checkout', {
 //Relasi Table 
 Cart.hasOne(Checkout);
 Checkout.belongsTo(Cart);
+
+//Relasi User
+User.hasMany(Checkout);
+Checkout.belongsTo(User)
 
 export default Checkout;

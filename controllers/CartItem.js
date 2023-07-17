@@ -44,7 +44,6 @@ export const createCartItem = async(req, res) => {
     const {productId, cartId} = req.body;
 
     try {
-        //KOK MALAH ERROR ANJAY
         //search productId
         // const product = await Product.findOne({ where:{ id: productId }})
         // if(!product){
