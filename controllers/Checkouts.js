@@ -65,10 +65,10 @@ export const updateCheckouts  = async(req, res) => {
     if(!checkout){
         return res.status(404).json({msg: "Checkout tidak ditemukan"})
     }else{
-        const {checkout} = req.body
+        const {status} = req.body
         try {
             await Checkout.update({
-                checkout: checkout
+                status: status
             },{
                 where:{
                     id: checkout.id
