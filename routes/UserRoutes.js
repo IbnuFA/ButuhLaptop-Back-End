@@ -3,13 +3,14 @@ import express from "express";
 import {
     getUser,
     getUserbyId,
+    getCheckoutbyUserUuid,
+    getCartbyUserUuid,
     createUser,
     updateUser,
     Login,
     Logout,
     getUserLogin,
     deleteUser,
-    getCheckoutbyUserUuid
 } from "../controllers/Users.js"
 
 import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
@@ -28,6 +29,7 @@ router.get('/users/test', (req, res) => {
 router.get('/users', verifyUser, adminOnly, getUser);
 router.get('/users/:id', verifyUser, adminOnly, getUserbyId);
 router.get('/users/:id/checkout', getCheckoutbyUserUuid)
+router.get('/users/:id/cart', getCartbyUserUuid)
 router.post('/users', verifyUser, adminOnly, createUser);
 router.patch('/users/:id', verifyUser, adminOnly, updateUser);
 router.delete('/users/:id', verifyUser, adminOnly, deleteUser);

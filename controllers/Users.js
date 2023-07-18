@@ -1,6 +1,7 @@
 import User from "../models/UserModel.js"
 import Checkout from "../models/CheckoutModel.js"
 import argon2 from "argon2"
+import Cart from "../models/CartModel.js"
 
 export const getUser  = async(req, res) => {
     try {
@@ -33,6 +34,17 @@ export const getCheckoutbyUserUuid = async(req, res) => {
     try {
         const {id} = req.params;
         const response = await User.findByPk(id, {include: Checkout})
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(500).json({msg: error.message})
+        console.log(error)
+    }
+}
+
+export const getCartbyUserUuid = async(req, res) => {
+    try {
+        const {id} = req.params;
+        const response = await User.findByPk(id, {include: Cart})
         res.status(200).json(response)
     } catch (error) {
         res.status(500).json({msg: error.message})
