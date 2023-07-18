@@ -6,6 +6,7 @@ import {
     createCart,
     updateCart,
     deleteCart,
+    getCartItembyCartId
 } from "../controllers/Carts.js";
 
 import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
@@ -18,6 +19,7 @@ router.get('/Cart/test', (req, res) => {
 
 router.get('/cart', getCart);
 router.get('/cart/:id', getCartbyId);
+router.get('/cart/:id/cartItem', getCartItembyCartId)
 router.post('/createcart', createCart);
 router.patch('/cart/:id', updateCart);
 router.delete('/cart/:id', deleteCart);

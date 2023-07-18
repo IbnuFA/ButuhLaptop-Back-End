@@ -188,9 +188,14 @@ Content-Type: application/json
 // get All Cart
 GET http://localhost:5000/cart
 
+
 ###
 // get Cart by Id
 GET http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b
+
+###
+// get All CartItembyCartId
+GET http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b/cartItem
 
 ### Update Cart
 PATCH http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b
@@ -214,7 +219,7 @@ POST http://localhost:5000/cartItem
 Content-Type: application/json
 
 {
-    "productId": "b67ca7d5-e77c-448c-b1bf-08866c5db8ea",
+    "productId": "0480652c-36e2-471e-971f-467c9e88c047",
     "cartId": "9993decf-94c3-486c-9ff2-67fd37dbc77b"
 }
 
@@ -223,22 +228,18 @@ Content-Type: application/json
 GET http://localhost:5000/cartItem
 
 ###
-// get All CartItem by CartId NOT DONE
-GET http://localhost:5000/cartItembyCartId
-
-###
 // get All CartItem by Id
-GET http://localhost:5000/cartItem/9993decf-94c3-486c-9ff2-67fd37dbc77b
+GET http://localhost:5000/cartItem/c223ff7c-06e8-41cd-aa7b-efd5d355de1d
 
 ### Update CartItem
-PATCH http://localhost:5000/cartItem/9993decf-94c3-486c-9ff2-67fd37dbc77b
+PATCH http://localhost:5000/cartItem/c223ff7c-06e8-41cd-aa7b-efd5d355de1d
 Content-Type: application/json
 
 {
-    "quantity": "77"
+    "cartId": "54245a7f-aeba-4e5c-974c-76b7778b1559"
 }
 
-// Delete feedback by ID
+// Delete CartItem by ID
 ###
 DELETE   http://localhost:5000/cartItem/caa9de99-0d71-46bf-ba9e-675528c6a9c5
 

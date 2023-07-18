@@ -1,3 +1,4 @@
+//User Data Dummy
 {
     {
         "first_name": "Ibnu",
@@ -23,4 +24,8 @@
         "confirmPassword": "12345678",
         "role": "user"
     },
+}
+
+{
+
 }

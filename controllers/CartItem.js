@@ -37,26 +37,19 @@ export const getCartItembyId = async(req, res) => {
 }
 
 export const getCartItembyCartId = async(req, res) => {
-    res.send("Test Router getCartItembyCartId")
+    try {
+        const {id} = req.params;
+        const response = await Cart.findByPk(id, {include: CartItem});
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(500).json({msg: error.message})
+        console.log(error)
+    }
 }
 
 export const createCartItem = async(req, res) => {
     const {productId, cartId} = req.body;
-
     try {
-        //search productId
-        // const product = await Product.findOne({ where:{ id: productId }})
-        // if(!product){
-        //     return res.status(400).json({msg: "Produk tidak ditemukan"})
-        // }
-
-        // //search productId
-        // const cart = await Cart.findOne({ where:{ id: cartId }})
-        // if(!cart){
-        //     return res.status(400).json({msg: "Produk tidak ditemukan"})
-        // }
-
-        //create cartItem
         await CartItem.create({
             productId: productId,
             cartId: cartId
@@ -76,7 +69,7 @@ export const updateCartItem = async(req, res) => {
     })
 
     if(!cartItem){
-        return res.status(404).json({msg: "Produk tidak ditemukan"})
+        return res.status(404).json({msg: "Produk tidak ditemukan dikeranjang"})
     }else{
         const {productId, cartId} = req.body
         try {
@@ -88,7 +81,7 @@ export const updateCartItem = async(req, res) => {
                     id: cartItem.id
                 }
             })
-            res.status(201).json({msg: "Produk telah diupdate"})
+            res.status(201).json({msg: "Produk telah diupdate dikeranjang"})
         } catch (error) {
             res.status(400).json({msg: error.message})
         }
