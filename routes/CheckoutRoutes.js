@@ -5,8 +5,7 @@ import {
     getCheckoutsbyId,
     createCheckouts,
     updateCheckouts,
-    deleteCheckouts,
-    getCheckoutbyUserUuid
+    deleteCheckouts
 } from "../controllers/Checkouts.js"
 
 const router = express.Router();
@@ -17,7 +16,6 @@ router.get('/checkouts/test', (req, res) => {
 
 router.get('/checkout', getCheckouts);
 router.get('/checkout/:id', getCheckoutsbyId);
-router.get('/checkoutUser', getCheckoutbyUserUuid)
 router.post('/checkout', createCheckouts);
 router.patch('/checkout/:id', updateCheckouts);
 router.delete('/checkout/:id', deleteCheckouts);

@@ -36,10 +36,6 @@ export const getCheckoutsbyId  = async(req, res) => {
     }
 }
 
-export const getCheckoutbyUserUuid = async(req, res) => {
-    res.send("Test Router getCheckoutbyUserUuid")
-}
-
 export const createCheckouts  = async(req, res) => {
     const {status, userUuid, cartId} = req.body;
     try {

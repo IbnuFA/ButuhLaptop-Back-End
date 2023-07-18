@@ -65,6 +65,10 @@ Content-Type: application/json
 GET http://localhost:5000/authusers
 
 ###
+//Get Checkout by User Uuid
+GET http://localhost:5000/users/3384f64f-db77-48a1-9a75-c0235543fd4f/checkout
+
+###
 //logout
 DELETE  http://localhost:5000/logout
 

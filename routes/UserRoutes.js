@@ -8,7 +8,8 @@ import {
     Login,
     Logout,
     getUserLogin,
-    deleteUser
+    deleteUser,
+    getCheckoutbyUserUuid
 } from "../controllers/Users.js"
 
 import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
@@ -26,6 +27,7 @@ router.get('/users/test', (req, res) => {
 
 router.get('/users', verifyUser, adminOnly, getUser);
 router.get('/users/:id', verifyUser, adminOnly, getUserbyId);
+router.get('/users/:id/checkout', getCheckoutbyUserUuid)
 router.post('/users', verifyUser, adminOnly, createUser);
 router.patch('/users/:id', verifyUser, adminOnly, updateUser);
 router.delete('/users/:id', verifyUser, adminOnly, deleteUser);
