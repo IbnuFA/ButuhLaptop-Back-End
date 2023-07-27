@@ -1,0 +1,34 @@
+### 
+//Create Checkout
+POST http://localhost:5000/checkout
+Content-Type: application/json
+
+{
+    "status" : "notPaid",
+    "userUuid": "c43f1a5d-0ee3-4d57-9591-98a87c419a13",
+    "cartId": "04b145f9-797a-4dea-a2c4-061d9b4f0075"
+}
+
+###
+// get All Checkout
+GET http://localhost:5000/checkout
+
+###
+// get All Checkout by CartId NOT DONE
+GET http://localhost:5000/checkoutUser
+
+###
+// get All Checkout by Id
+GET http://localhost:5000/checkout/d90f3fa6-1ee4-4fd4-a638-954116caa506
+
+### Update Checkout
+PATCH http://localhost:5000/checkout/d90f3fa6-1ee4-4fd4-a638-954116caa506
+Content-Type: application/json
+
+{
+    "status": "notPaid UPDATED"
+}
+
+// Delete Checkout by ID
+###
+DELETE   http://localhost:5000/checkout/caa9de99-0d71-46bf-ba9e-675528c6a9c5

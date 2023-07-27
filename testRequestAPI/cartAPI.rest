@@ -1,0 +1,36 @@
+//CART
+
+###
+// get All Cart
+GET http://localhost:5000/cart
+
+###
+// get Cart by Id
+GET http://localhost:5000/cart/04b145f9-797a-4dea-a2c4-061d9b4f0075
+
+###
+// get All CartItembyCartId
+GET http://localhost:5000/cart/04b145f9-797a-4dea-a2c4-061d9b4f0075/cartItem
+
+### 
+//Create Cart
+POST http://localhost:5000/createcart
+Content-Type: application/json
+
+{
+    "userUuid": "c43f1a5d-0ee3-4d57-9591-98a87c419a13",
+    "productId": "193e3d4c-a809-4676-a70f-47f20e7ee3be",
+    "isActive": "1"
+}
+
+### Update Cart
+PATCH http://localhost:5000/cart/9993decf-94c3-486c-9ff2-67fd37dbc77b
+Content-Type: application/json
+
+{
+    "isActive": "0"
+}
+
+// Delete Cart by ID
+###
+DELETE   http://localhost:5000/cart/caa9de99-0d71-46bf-ba9e-675528c6a9c5

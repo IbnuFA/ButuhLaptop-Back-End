@@ -1,0 +1,41 @@
+//PRODUCTS
+
+###
+// get All Product
+GET http://localhost:5000/products
+
+###
+// get Product by ID
+GET http://localhost:5000/products/c380ed6c-4897-46ea-9be9-6ebfd7591387
+
+###
+// Create Products
+POST http://localhost:5000/products
+Content-Type: application/json
+
+{
+    "name": "Laptop coba 4",
+    "description": "Intel I9, RAM 8GB",
+    "category": "gaming",
+    "price": "1500000",
+    "stock": "15",
+    "image": "qqq"
+}
+
+
+###
+// get Update Product
+PATCH  http://localhost:5000/products/4b80df7a-5ad4-431b-bdf4-843fcfc7d040
+Content-Type: application/json
+
+{
+    "name": "Asus ROG",
+    "description": "Intel I7, RAM 16GB",
+    "price": "2000000",
+    "stock": "5",
+    "image": "eeee"
+}
+
+###
+// Delete product by ID
+DELETE   http://localhost:5000/products/769dfe6e-8e77-4449-9eb4-d12dccdec7f4

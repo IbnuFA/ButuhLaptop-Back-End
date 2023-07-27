@@ -1,0 +1,34 @@
+//FEEDBACK
+
+###
+// get All Feedbacks
+GET http://localhost:5000/feedbacks
+
+###
+// get Feedbacks by ID
+GET http://localhost:5000/feedbacks/4cdc80a4-0a6c-4611-9c70-24a3257dfade
+
+###
+// Create Feedbacks
+POST http://localhost:5000/feedbacks
+Content-Type: application/json
+
+{
+    "feedback": "Tes Feedback",
+    "rate": "4"
+}
+
+
+###
+// get Update Feedbacks
+PATCH http://localhost:5000/feedbacks/67b5f976-58ec-498f-9836-9835f9b52f0c
+Content-Type: application/json
+
+{
+    "feedback": "UI user bisa dibagusin lagi 123",
+    "rate": "4"
+}
+
+###
+// Delete feedback by ID
+DELETE   http://localhost:5000/feedbacks/67b5f976-58ec-498f-9836-9835f9b52f0c

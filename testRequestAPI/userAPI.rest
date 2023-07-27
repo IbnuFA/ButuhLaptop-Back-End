@@ -1,0 +1,106 @@
+// Create User
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+    "first_name": "Ibnu",
+    "last_name": "Fauzan Affifudin",
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "admin"
+}
+
+###
+// Create Admin
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+   "first_name": "Ibnu",
+    "last_name": "Fauzan Affifudin",
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "admin"
+}
+
+###
+//Login Admin
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "fauzanibnu343@gmail.com",
+    "password": "12345678"
+}
+
+###
+// Create user
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "first_name": "Bronya",
+    "last_name": "Zaychik",
+    "email": "touchme0709@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "user"
+}
+
+###
+//Login user
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "touchme0709@gmail.com",
+    "password": "12345678"
+}
+
+
+###
+//Get User Login
+GET http://localhost:5000/authusers
+
+###
+//Get Checkout by User Uuid
+GET http://localhost:5000/users/3384f64f-db77-48a1-9a75-c0235543fd4f/checkout
+
+###
+//Get Cart by User Uuid
+GET http://localhost:5000/users/c43f1a5d-0ee3-4d57-9591-98a87c419a13/cart
+
+###
+//logout
+DELETE  http://localhost:5000/logout
+
+
+//CRUD USER
+
+###
+// get All User
+GET http://localhost:5000/users
+
+###
+// get User by ID
+GET http://localhost:5000/users/73b2a651-9e01-4552-a714-84c67ef15e1d
+
+###
+// update User by ID
+PATCH  http://localhost:5000/users/2d5b1947-e0a0-41a2-8a7f-594d59a9373e
+Content-Type: application/json
+
+{
+    "first_name": "Bronya",
+    "last_name": "Zaychik Updated 2",
+    "email": "bunnycute321@gmail.com",
+    "password": "",
+    "confirmPassword": "",
+    "role": "user"
+}
+
+###
+// Delete User by ID
+DELETE   http://localhost:5000/users/2d5b1947-e0a0-41a2-8a7f-594d59a9373e

@@ -7,7 +7,7 @@ export const getCart = async(req, res) => {
     try {
         const response = await Cart.findAll({
             // relasi user
-            attributes: ['id', 'quantity'],
+            attributes: ['id', 'isActive'],
             include:[{
                 model: User,
                 // include: ['first_name', 'last_name', 'role' ]
@@ -23,7 +23,7 @@ export const getCart = async(req, res) => {
 export const getCartbyId  = async(req, res) => {
     try {
         const response = await Cart.findOne({
-            attributes: ['id', 'quantity'],
+            attributes: ['id', 'isActive'],
             where:{
                 id: req.params.id
             },
@@ -50,12 +50,12 @@ export const getCartItembyCartId = async (req, res) => {
 }
 
 export const createCart = async(req, res) => {
-    const {userUuid, productId, quantity} = req.body;
+    const {userUuid, productId, isActive} = req.body;
     try {
         await Cart.create({
             userUuid: userUuid,
             productId: productId,
-            quantity: quantity,
+            isActive: isActive,
         })
         res.status(201).json({msg: "Cart telah ditambahkan"})
     } catch (error) {
@@ -74,10 +74,10 @@ export const updateCart = async(req, res) => {
     if(!cart){
         return res.status(404).json({msg: "Cart tidak ditemukan"})
     }else{
-        const {quantity} = req.body
+        const {isActive} = req.body
         try {
             await Cart.update({
-                quantity: quantity
+                isActive: isActive
             },{
                 where:{
                     id: cart.id

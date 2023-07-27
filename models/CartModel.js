@@ -15,13 +15,20 @@ const Cart = db.define('cart', {
         },
         primaryKey: true,
     },
-    quantity:{
-        type: Datatypes.INTEGER,   
+    isActive:{
+        type: Datatypes.BOOLEAN,   
         allowNull: false,
         validate:{
             notEmpty: true,
         }
     },
+    // quantity:{
+    //     type: Datatypes.INTEGER,   
+    //     allowNull: false,
+    //     validate:{
+    //         notEmpty: true,
+    //     }
+    // },
 }, {freezeTableName: true});
 
 // Users.hasMany(Cart);
