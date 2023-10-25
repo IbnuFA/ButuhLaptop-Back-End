@@ -52,19 +52,16 @@ export const getCartbyUserUuid = async(req, res) => {
 }
 
 export const createUser  = async(req, res) => {
-    const {first_name, last_name, email, password, confirmPassword, role} = req.body
+    const {first_name, last_name, email, password, confirmPassword, role, province, postal_code, city, address} = req.body;
     if(password !== confirmPassword) {
         return res.status(400).json({msg: "Password dan Confirm Password tidak cocok"})
     } else {
-        const hassPassword = await argon2.hash(password)
+        const hashPassword = await argon2.hash(password)
 
         try {
             await User.create({
-                first_name: first_name,
-                last_name: last_name,
-                email: email,
-                password: hassPassword,
-                role: role,
+                ...req.body,
+                password: hashPassword,
             })
             res.status(201).json({msg: "Register Berhasil"})
         } catch (error) {
