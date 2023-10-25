@@ -1,5 +1,5 @@
-import Product from "../models/ProductModel.js";
-import User from "../models/UserModel.js";
+import Product from "../models/Product.js";
+
 
 export const getProducts  = async(req, res) => {
     try {
@@ -23,7 +23,7 @@ export const getProducts  = async(req, res) => {
 
 export const getProductsbyId  = async(req, res) => {
     try {
-        const response = await Products.findOne({
+        const response = await Product.findOne({
             attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image'],
             where:{
                 id: req.params.id
