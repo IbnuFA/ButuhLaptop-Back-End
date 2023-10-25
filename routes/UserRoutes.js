@@ -35,7 +35,7 @@ router.patch('/users/:id', verifyUser, adminOnly, updateUser);
 router.delete('/users/:id', verifyUser, adminOnly, deleteUser);
 
 //Auth Route
-router.get('/authusers', getUserLogin);;
+router.get('/authusers', getUserLogin);
 router.post('/register', createUser);
 router.post('/login', Login);
 router.delete('/logout', Logout);
