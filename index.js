@@ -6,17 +6,18 @@ import db from "./config/Database.js";
 import SequelizeStore from "connect-session-sequelize"
 
 //import model
+import Cart from "./models/Cart.js";
+import Feedbacks from "./models/Feedback.js";
+import OrderDetail from "./models/Order-Detail.js";
+import Order from "./models/Order.js";
+import User from "./models/User.js";
+import Product from "./models/Product.js";
 
 //import route
 import UsersRoute from "./routes/UserRoutes.js"
 import ProductRoute from "./routes/ProductRoutes.js"
 import FeedbacksRoute from "./routes/FeedbackRoutes.js";
-import User from "./models/User.js";
-import Product from "./models/Product.js";
-import Cart from "./models/Cart.js";
-import Feedbacks from "./models/Feedback.js";
-import OrderDetail from "./models/Order-Detail.js";
-import Order from "./models/Order.js";
+import AdminProductRoute from "./routes/ProductAdminRoutes.js";
 
 dotenv.config()
 
@@ -85,6 +86,7 @@ app.use(express.json())
 //middleware
 app.use(UsersRoute)
 app.use(ProductRoute)
+app.use(AdminProductRoute)
 app.use(FeedbacksRoute)
 
 store.sync()
