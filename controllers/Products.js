@@ -37,16 +37,15 @@ export const getProductsbyId  = async(req, res) => {
 }
 
 export const createProducts  = async(req, res) => {
-    const {name, description, category, price, stock, image } = req.body;
+    const {name, description, price, stock, image } = req.body;
     try {
         await Product.create({
             name: name,
             description: description,
-            category: category,
             price: price,
             stock: stock,
             image: image,
-            userId: req.userId
+            // userId: req.userId
         })
         res.status(201).json({msg: "Produk telah Ditambahkan"})
     } catch (error) {
