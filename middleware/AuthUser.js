@@ -1,4 +1,5 @@
-import User from "../models/UserModel.js"
+import User from "../models/User.js"
+
 
 //cek user login atau belum
 export const verifyUser = async (req, res, next) => {
@@ -24,7 +25,7 @@ export const verifyUser = async (req, res, next) => {
 export const adminOnly = async (req, res, next) => {
     const user = await User.findOne({
         where: {
-            uuid: req.session.userId
+            uuid: req.session.userId,
         }
     })
 
