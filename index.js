@@ -14,10 +14,11 @@ import User from "./models/User.js";
 import Product from "./models/Product.js";
 
 //import route
-import UsersRoute from "./routes/UserRoutes.js"
-import ProductRoute from "./routes/ProductRoutes.js"
-import FeedbacksRoute from "./routes/FeedbackRoutes.js";
-import AdminProductRoute from "./routes/ProductAdminRoutes.js";
+import AuthRouter from "./routes/Auth-Routes.js"
+import ProductRoute from "./routes/user/Product-Routes.js"
+import FeedbacksRoute from "./routes/Feedback-Routes.js";
+import AdminProductRoute from "./routes/admin/Admin-Product-Routes.js";
+import AdminUserRoute from "./routes/admin/Admin-User-Route.js";
 
 dotenv.config()
 
@@ -47,16 +48,6 @@ try {
         OrderDetail.sync(),
         Order.sync(),
     ])
-    
-    //awal2 tetap harus ditulis satu per satu
-    // await User.sync();
-    // await Product.sync();
-    // await Cart.sync();
-    // await CartItem.sync();
-    // await Checkout.sync();
-    // await Feedbacks.sync();
-
-
     console.log('Database Connected!');
 } catch (err) {
     console.error(`Error => ${err}`);
@@ -83,11 +74,16 @@ app.use(cors({
 
 app.use(express.json())
 
-//middleware
-app.use(UsersRoute)
+//route auth
+app.use(AuthRouter)
+
+//route user
 app.use(ProductRoute)
-app.use(AdminProductRoute)
 app.use(FeedbacksRoute)
+
+//route admin
+app.use(AdminProductRoute)
+app.use(AdminUserRoute)
 
 store.sync()
 
