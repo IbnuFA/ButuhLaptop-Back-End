@@ -1,18 +1,11 @@
 import Product from "../models/Product.js";
+import { ErrorResponseMessage, SuccessResponseMessage } from "../utils/response-message.js";
 
 
 export const getProducts  = async(req, res) => {
     try {
         const response = await Product.findAll({
-            // relasi user
-            attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image'],
-            // user bisa melihat daya yang dia inputkan
-            // where: {
-            //     UserId: req.UserId
-            // },
-            include:[{
-                model: User
-            }]
+            attributes: ['id', 'name', 'description', 'price', 'stock', 'image'],
         })
         res.status(200).json(response);
     } catch (error) {
@@ -23,13 +16,17 @@ export const getProducts  = async(req, res) => {
 
 export const getProductsbyId  = async(req, res) => {
     try {
-        const response = await Product.findOne({
-            attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image'],
+        const product = await Product.findOne({
+            attributes: ['id', 'name', 'description', 'price', 'stock', 'image'],
             where:{
                 id: req.params.id
             }
         })
-        res.status(200).json(response)
+        if(!product) {
+            res.status(400).json({msg: ErrorResponseMessage[404]})
+            return 
+        }
+        res.status(200).json(product)
     } catch (error) {
         res.status(500).json({msg: error.message})
         console.log(error)
@@ -39,15 +36,15 @@ export const getProductsbyId  = async(req, res) => {
 export const createProducts  = async(req, res) => {
     const {name, description, price, stock, image } = req.body;
     try {
-        await Product.create({
+        const data = {
             name: name,
             description: description,
             price: price,
             stock: stock,
             image: image,
-            // userId: req.userId
-        })
-        res.status(201).json({msg: "Produk telah Ditambahkan"})
+        }
+        await Product.create(data)
+        res.status(201).json({msg: SuccessResponseMessage[201], data })
     } catch (error) {
         res.status(400).json({msg: error.message})
     }
@@ -61,23 +58,24 @@ export const updateProducts  = async(req, res) => {
     })
 
     if(!product){
-        return res.status(404).json({msg: "Products tidak ditemukan"})
+        return res.status(404).json({msg: ErrorResponseMessage[404]})
     } else{
         const {name, description, category, price, stock, image } = req.body
         try {
-            await Product.update({
+            const data = {
                 name: name,
                 description: description,
                 category: category,
                 price: price,
                 stock: stock,
                 image: image
-            },{
+            }
+            const updRes = await Product.update(data,{
                 where:{
                     id: product.id
                 }
             })
-            res.status(201).json({msg: "Produk telah diupdate"})
+            res.status(200).json({msg: SuccessResponseMessage[200], data})
         } catch (error) {
             res.status(400).json({msg: error.message})
         }
@@ -92,7 +90,7 @@ export const deleteProducts  = async(req, res) => {
     })
 
     if(!product){
-        return res.status(404).json({msg: "Product tidak ditemukan"})
+        return res.status(404).json({msg: ErrorResponseMessage[404]})
     } else {
         try {
             await Product.destroy({
@@ -100,7 +98,7 @@ export const deleteProducts  = async(req, res) => {
                     id: product.id
                 }
             })
-            res.status(200).json({msg: "Product telah dihapus"})
+            res.status(200).json({msg: SuccessResponseMessage[200]})
         } catch (error) {
             res.status(400).json({msg: error.message})
         }
