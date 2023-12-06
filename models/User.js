@@ -65,8 +65,22 @@ const User = db.define('users', {
             notEmpty: true,
         }
     },
+    province_id: {
+        type: Datatypes.INTEGER,
+        allowNull: false,
+        validate:{
+            notEmpty: true,
+        }
+    },
     province: {
         type: Datatypes.STRING,
+        allowNull: false,
+        validate:{
+            notEmpty: true,
+        }
+    },
+    city_id: {
+        type: Datatypes.INTEGER,
         allowNull: false,
         validate:{
             notEmpty: true,

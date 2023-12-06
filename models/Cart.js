@@ -16,6 +16,7 @@ const Cart = db.define('carts', {
     },
     status: {
         type: DataTypes.SMALLINT
+        //status => 0: still in cart; 1: checkedout 
     }
 });
 

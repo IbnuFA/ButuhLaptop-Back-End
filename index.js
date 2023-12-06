@@ -19,6 +19,10 @@ import ProductRoute from "./routes/user/Product-Routes.js"
 import FeedbacksRoute from "./routes/Feedback-Routes.js";
 import AdminProductRoute from "./routes/admin/Admin-Product-Routes.js";
 import AdminUserRoute from "./routes/admin/Admin-User-Route.js";
+import UserCartRoutes from "./routes/user/Cart-Routes.js";
+import UserOrderRouter from "./routes/user/Order-Routes.js";
+import AdminOrderRoute from "./routes/admin/Admin-Order-Route.js";
+import Shipping from "./models/Shipping.js";
 
 dotenv.config()
 
@@ -47,6 +51,7 @@ try {
         Cart.sync(),
         OrderDetail.sync(),
         Order.sync(),
+        Shipping.sync()
     ])
     console.log('Database Connected!');
 } catch (err) {
@@ -80,13 +85,16 @@ app.use(AuthRouter)
 //route user
 app.use(ProductRoute)
 app.use(FeedbacksRoute)
+app.use(UserCartRoutes)
+app.use(UserOrderRouter)
 
 //route admin
 app.use(AdminProductRoute)
 app.use(AdminUserRoute)
+app.use(AdminOrderRoute)
 
 store.sync()
 
 app.listen(process.env.APP_PORT, () => {
-    console.log('Server is Running')
+    console.log('Server is running at port', process.env.APP_PORT)
 })

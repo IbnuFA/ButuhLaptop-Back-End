@@ -10,15 +10,13 @@ import {
 
 import { verifyUser } from "../../middleware/AuthUser.js";
 
-const router = express.Router();
+const ProductRouter = express.Router();
 
-router.use(verifyUser)
-
-router.get('/products/test', (req, res) => {
+ProductRouter.get('/products/test', (req, res) => {
   res.send("Test Router Products")
 }) 
 
-router.get('/products' ,getProducts);
-router.get('/products/:id', getProductsbyId);
+ProductRouter.get('/products', verifyUser, getProducts);
+ProductRouter.get('/products/:id', verifyUser, getProductsbyId);
 
-export default router
+export default ProductRouter;

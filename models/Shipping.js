@@ -50,7 +50,20 @@ const Shipping = db.define('shippings', {
         validate: {
             notEmpty: true
         },
-    }
+    },
+    provider_service: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: true
+        },
+    },
+    etd: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: true
+        },
+    },
+    
 });
 
 export default Shipping;

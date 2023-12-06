@@ -1,6 +1,7 @@
 import db from "../config/Database.js";
 import Sequelize  from "sequelize";
 import Shipping from "./Shipping.js";
+import User from "./User.js";
 
 const DataTypes = Sequelize.DataTypes
 
@@ -9,6 +10,9 @@ const Order = db.define('orders', {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+    },
+    products_price: {
+        type: DataTypes.BIGINT,
     },
     total_price: {
         type: DataTypes.BIGINT,
@@ -26,5 +30,8 @@ const Order = db.define('orders', {
 
 Shipping.hasOne(Order);
 Order.belongsTo(Shipping);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 export default Order;

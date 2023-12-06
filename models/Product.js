@@ -27,6 +27,12 @@ const Product = db.define('products', {
             notEmpty: true
         },
     },
+    weight: {
+        type: DataTypes.BIGINT,
+        validate: {
+            notEmpty: true
+        },
+    },
     image: {
         type: DataTypes.STRING,
         validate: {

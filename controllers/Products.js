@@ -5,7 +5,7 @@ import { ErrorResponseMessage, SuccessResponseMessage } from "../utils/response-
 export const getProducts  = async(req, res) => {
     try {
         const response = await Product.findAll({
-            attributes: ['id', 'name', 'description', 'price', 'stock', 'image'],
+            attributes: ['id', 'name', 'description', 'price', 'stock', 'image', 'weight'],
         })
         res.status(200).json(response);
     } catch (error) {
@@ -17,7 +17,7 @@ export const getProducts  = async(req, res) => {
 export const getProductsbyId  = async(req, res) => {
     try {
         const product = await Product.findOne({
-            attributes: ['id', 'name', 'description', 'price', 'stock', 'image'],
+            attributes: ['id', 'name', 'description', 'price', 'stock', 'image', 'weight'],
             where:{
                 id: req.params.id
             }
@@ -34,7 +34,7 @@ export const getProductsbyId  = async(req, res) => {
 }
 
 export const createProducts  = async(req, res) => {
-    const {name, description, price, stock, image } = req.body;
+    const {name, description, price, stock, image, weight } = req.body;
     try {
         const data = {
             name: name,
@@ -42,6 +42,7 @@ export const createProducts  = async(req, res) => {
             price: price,
             stock: stock,
             image: image,
+            weight,
         }
         await Product.create(data)
         res.status(201).json({msg: SuccessResponseMessage[201], data })

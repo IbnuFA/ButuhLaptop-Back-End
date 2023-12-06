@@ -1,5 +1,7 @@
 import argon2 from "argon2"
 import User from "../models/User.js"
+import axios from "axios"
+import { getCityById, getProvinceById } from "../services/logistic-service.js"
 
 export const getUser  = async(req, res) => {
     try {
@@ -52,15 +54,21 @@ export const getCartbyUserUuid = async(req, res) => {
 }
 
 export const createUser  = async(req, res) => {
-    const {first_name, last_name, email, password, confirmPassword, role, province, postal_code, city, address} = req.body;
+    const {first_name, last_name, email, password, confirmPassword, role, province_id, postal_code, city_id, address} = req.body;
     if(password !== confirmPassword) {
         return res.status(400).json({msg: "Password dan Confirm Password tidak cocok"})
     } else {
         const hashPassword = await argon2.hash(password)
-
         try {
+            const [province, city] = await Promise.all([
+                getProvinceById(province_id),
+                getCityById(city_id)
+            ])
             await User.create({
                 ...req.body,
+                postal_code,
+                province,
+                city,
                 password: hashPassword,
             })
             res.status(201).json({msg: "Register Berhasil"})

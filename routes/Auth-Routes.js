@@ -17,10 +17,10 @@ import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
 
 const AuthRouter = express.Router();
 
-AuthRouter.use((req, res, next) => {
-  console.log('Time : ', Date.now())
-  next()
-})
+// AuthRouter.use((req, res, next) => {
+//   console.log('Time : ', Date.now())
+//   next()
+// })
 
 AuthRouter.get('/users/test', (req, res) => {
   res.send("Test Router User")

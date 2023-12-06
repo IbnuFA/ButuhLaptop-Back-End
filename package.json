@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.30.3",
+    "axios": "^1.6.2",
     "connect-session-sequelize": "^7.1.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -26,6 +27,6 @@
     "eslint": "^8.52.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-prettier": "^5.0.1",
-    "prettier": "3.0.3"
+    "prettier": "^3.0.3"
   }
 }
