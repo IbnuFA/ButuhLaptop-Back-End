@@ -4,7 +4,6 @@ import session, { Store } from "express-session";
 import dotenv from "dotenv"
 import db from "./config/Database.js";
 import SequelizeStore from "connect-session-sequelize"
-
 //import model
 import Cart from "./models/Cart.js";
 import Feedbacks from "./models/Feedback.js";

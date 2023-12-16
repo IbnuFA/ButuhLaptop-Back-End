@@ -1,187 +1,338 @@
-import Cart from "../models/Cart.js";
-import Product from "../models/Product.js";
-import User from "../models/User.js";
-import Order from "../models/Order.js";
-import OrderDetail from "../models/Order-Detail.js";
-import { getShippingCost } from "../services/logistic-service.js";
-import { SuccessResponseMessage } from "../utils/response-message.js";
-import { readableOrderStatus } from "../utils/util-functions.js";
-import Shipping from "../models/Shipping.js";
+import Cart from '../models/Cart.js';
+import Product from '../models/Product.js';
+import User from '../models/User.js';
+import Order from '../models/Order.js';
+import OrderDetail from '../models/Order-Detail.js';
+import { getShippingCost } from '../services/logistic-service.js';
+import { SuccessResponseMessage } from '../utils/response-message.js';
+import { readableOrderStatus } from '../utils/util-functions.js';
+import Shipping from '../models/Shipping.js';
+import { ValidationError } from 'sequelize';
+import { OrderStatus } from '../utils/global.js';
+import multer from 'multer';
+const upload = multer({ dest: 'uploads/' });
 
-const checkOrderPricing = async(userId) => {
-    const userCarts = await Cart.findAll({
-        where: { userUuid: userId },
-        include: [
+export const getMyOrders = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    let orders = await Order.findAll({
+      attributes: ['id', 'products_price', 'total_price', 'currency', 'status', 'payment_prove', 'createdAt', 'updatedAt'],
+      where: { userUuid: userId },
+      order: [['status', 'ASC']],
+      include: [
+        {
+          model: User,
+          attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
+        },
+        {
+          model: OrderDetail,
+          attributes: ['id'],
+          include: [
             {
               model: Product,
               attributes: ['id', 'name', 'price', 'image', 'description', 'weight'],
             },
-            {
-              model: User,
-              attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
-            },
           ],
+        },
+      ],
     });
-    // return userCarts
-    if(userCarts.length == 0){
-        throw Error
-    }
-    const user = userCarts[0].dataValues.user;
 
-    let summary = {
-        total_weight: 0,
-        currency: "IDR",
-        products_price: 0,
-        estimated_total_price_min: 0,
-        estimated_total_price_max: 0,
-        products: [],
-        shippings: {},
-    }
+    res.status(200).json({ msg: SuccessResponseMessage[200], data: orders });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
 
-    for (const cartData of userCarts) {
-        const cart = cartData.dataValues;
-        summary.products_price+= cart.quantity * cart.product.price;
-        summary.products.push(cart.product);
-        summary.total_weight += cart.product.weight;
-    }
-    const shippings = await getShippingCost(user.city_id, summary.total_weight);
-    // console.log(shippings)
-    summary.shippings = shippings
-    let costs = shippings.services.map((s) => +s.cost);
-    // console.log({costs, min: Math.min(...[4000, 7000])})
-    summary.estimated_total_price_min = Math.min(...costs) + summary.products_price;
-    summary.estimated_total_price_max = Math.max(...costs) + summary.products_price;
+const checkOrderPricing = async (userId) => {
+  const userCarts = await Cart.findAll({
+    where: { userUuid: userId },
+    include: [
+      {
+        model: Product,
+        attributes: ['id', 'name', 'price', 'image', 'description', 'weight'],
+      },
+      {
+        model: User,
+        attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
+      },
+    ],
+  });
+  // return userCarts
+  if (userCarts.length == 0) {
+    throw Error;
+  }
+  const user = userCarts[0].dataValues.user;
 
-    return summary
-}
+  let summary = {
+    total_weight: 0,
+    currency: 'IDR',
+    products_price: 0,
+    estimated_total_price_min: 0,
+    estimated_total_price_max: 0,
+    products: [],
+    shippings: {},
+  };
 
-export const checkOrder = async(req, res) => {
-    try {
-        const userId = req.session.userId;
-        
-        res.status(200).json({ msg: SuccessResponseMessage[200], data: await checkOrderPricing(userId) });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: error.message });
-    }
-}
+  for (const cartData of userCarts) {
+    const cart = cartData.dataValues;
+    summary.products_price += cart.quantity * cart.product.price;
+    summary.products.push(cart.product);
+    summary.total_weight += cart.product.weight;
+  }
+  const shippings = await getShippingCost(user.city_id, summary.total_weight);
+  // console.log(shippings)
+  summary.shippings = shippings;
+  let costs = shippings.services.map((s) => +s.cost);
+  // console.log({costs, min: Math.min(...[4000, 7000])})
+  summary.estimated_total_price_min = Math.min(...costs) + summary.products_price;
+  summary.estimated_total_price_max = Math.max(...costs) + summary.products_price;
 
-//! NEED MORE IMPLEMENTATION LATER
+  return summary;
+};
+
+export const checkOrder = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    res.status(200).json({ msg: SuccessResponseMessage[200], data: await checkOrderPricing(userId) });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 export const createOrder = async (req, res) => {
-    try {
-        const userId = req.session.userId;
-        //get all users products in cart
-        const co = await checkOrderPricing(userId);
-        //status order: 0 (need admin input), 1 (approved), 2 (customer payment), 3 (payment approval on admin), 4(sent), 9(expired)
-        const order = await Order.create({
-            products_price: co.products_price,
-            currency: co.currency,
-            status: 0,
-            userUuid: userId,
-        })
+  try {
+    const userId = req.session.userId;
+    //get all users products in cart
+    const co = await checkOrderPricing(userId);
+    //status order: 0 (need admin input), 1 (approved), 2 (customer payment), 3 (payment approval on admin), 4(sent), 9(expired)
+    const order = await Order.create({
+      products_price: co.products_price,
+      currency: co.currency,
+      status: OrderStatus.ORDER_PLACED,
+      userUuid: userId,
+    });
 
-        let orderDetails = []
-        for (const item of co.products) {
-           let temp = await OrderDetail.create({
-                productId: item.id,
-                orderId: order.dataValues.id
-            })
-            orderDetails.push(temp)
-        }
-
-        //!should update (delete) the cart after moving to create order and update product stock
-
-        res.status(200).json({ msg: SuccessResponseMessage[200], data: {order, detail: orderDetails} });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: error.message });
+    let orderDetails = [];
+    for (const item of co.products) {
+      let temp = await OrderDetail.create({
+        productId: item.id,
+        orderId: order.dataValues.id,
+      });
+      orderDetails.push(temp);
     }
-}
 
-export const getMyOrders = async(req, res) => {
-    try {
-        const userId = req.session.userId;
-        let orders = await Order.findAll({
-            attributes: ['products_price', 'total_price', 'currency', 'status', 'payment_prove', 'createdAt', 'updatedAt'],
-            where: {userUuid: userId},
-            include: [
-                {
-                  model: User,
-                  attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
-                },
-                {
-                    model: OrderDetail,
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: Product,
-                            attributes: ['id', 'name', 'price', 'image', 'description', 'weight'],
-                        },
-                    ]
-                },
+    await Cart.destroy({ where: { userUuid: userId } });
 
-            ],
-            
+    res.status(200).json({ msg: SuccessResponseMessage[200], data: { order, detail: orderDetails } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
 
-        });
-
-        res.status(200).json({ msg: SuccessResponseMessage[200], data: orders });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: error.message });
-    }
-}
-
-export const payOrder = async(req, res) => {
-
-}
-
-export const adminOrderApproval = async(req, res) => {
-    try {
-        const adminId = req.session.userId;
-        const orderId = req.params.id
-        const { approval } = req.body;
-        const order = await Order.findOne({where: {id: orderId}});
-        if(order.dataValues.status != 0) throw Error("Order is not in confirmation state")
-        const upd = await Order.update({
-            status: approval == true ? 1 : 9, 
-        }, {
-            where: {id: orderId}
-        });
-        res.status(200).json({ msg: SuccessResponseMessage[200] + ` Order ${approval == true ? "approved" : "cancelled"}`, data: true});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: error.message });
-    }
-}
+export const adminAcceptOrder = async (req, res) => {
+  try {
+    const adminId = req.session.userId;
+    const orderId = req.params.id;
+    const { approval } = req.body;
+    const order = await Order.findOne({ where: { id: orderId } });
+    if (order.dataValues.status != 0) throw Error('Order is not in confirmation state');
+    const upd = await Order.update(
+      {
+        status: approval == true ? OrderStatus.ORDER_ACCEPTED : OrderStatus.ORDER_CANCELLED,
+      },
+      {
+        where: { id: orderId },
+      },
+    );
+    res.status(200).json({ msg: SuccessResponseMessage[200] + ` Order ${approval == true ? 'approved' : 'cancelled'}`, data: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
 
 export const adminFillShippingInfo = async (req, res) => {
-    try {
-        const adminId = req.session.userId;
-        const orderId = req.params.id
-        let order = await Order.findOne({where: {id: orderId}, include: { model: User}});
-        if(order.dataValues.status != 1) throw Error("Order state is not need to fill shipping info")
+  try {
+    const adminId = req.session.userId;
+    const orderId = req.params.id;
+    let order = await Order.findOne({ where: { id: orderId }, include: { model: User } });
+    if (order.dataValues.status != OrderStatus.ORDER_ACCEPTED) throw Error('Order state is not need to fill shipping info');
 
-        const buyer = order.dataValues.user;
+    const buyer = order.dataValues.user;
 
-        const { provider, shipping_price, provider_service, etd } = req.body;
-        const shipping = await Shipping.create({
-            provider, shipping_price, provider_service, etd,
-            reciever_postal: buyer.postal_code,
-            receiver_address: buyer.address,
-            receiver_province: buyer.province,
-            receiver_city: buyer.city,
-        });
+    const { provider, shipping_price, provider_service, etd } = req.body;
+    const shipping = await Shipping.create({
+      provider,
+      shipping_price,
+      provider_service,
+      etd,
+      reciever_postal: buyer.postal_code,
+      receiver_address: buyer.address,
+      receiver_province: buyer.province,
+      receiver_city: buyer.city,
+    });
 
-        const updOrder = await order.update({
-            shippingId: shipping.dataValues.id, 
-            total_price: +order.dataValues.total_price + shipping_price,
-        })
-        
-        order = await Order.findOne({where: {id: orderId}, include: {model: Shipping}});
-        res.status(200).json({ msg: SuccessResponseMessage[200], data: order});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: error.message });
+    // if (order.dataValues.total_price == null) {
+    //   order.dataValues.total_price = order.dataValues.products_price;
+    // }
+
+    const updOrder = await order.update({
+      shippingId: shipping.dataValues.id,
+      total_price: order.dataValues.products_price + shipping_price,
+      status: OrderStatus.ORDER_ON_PROCESS,
+    });
+
+    order = await Order.findOne({ where: { id: orderId }, include: { model: Shipping } });
+    res.status(200).json({ msg: SuccessResponseMessage[200], data: order });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+export const payOrder = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const orderId = req.params.id;
+    let order = await Order.findOne({ where: { id: orderId } });
+    if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');
+    if (order.dataValues.status != OrderStatus.ORDER_NEEDS_PAYMENT) throw Error('Order state is not need payment');
+
+    let filename = '';
+
+    const uploadedFile = req.file;
+    if (!['image/jpeg', 'image/png', 'image/jpeg'].includes(uploadedFile.mimetype)) {
+      throw new ValidationError('Only JPEG, JPG, and PNG are allowed!');
     }
-}
+
+    console.log({ uploadedFile });
+    filename = uploadedFile.filename;
+
+    const upd = await Order.update(
+      {
+        payment_prove: filename,
+        status: OrderStatus.ORDER_PAYED,
+      },
+      { where: { id: orderId } },
+    );
+
+    order = await Order.findOne({ where: { id: orderId } });
+    res.status(200).json({ msg: 'File uploaded successfully!', data: order });
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      res.status(400).json({ msg: error.message });
+    } else {
+      res.status(500).json({ msg: error.message });
+    }
+  }
+};
+
+export const adminVerifyPaymentOrder = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const orderId = req.params.id;
+    let order = await Order.findOne({ where: { id: orderId } });
+    if (order.dataValues.status !== OrderStatus.ORDER_PAYED) throw new Error('Order not in payment confirmation state');
+    const { approval } = req.body;
+
+    if (approval == true) {
+      const upd = await Order.update(
+        {
+          status: OrderStatus.ORDER_ON_PROCESS,
+        },
+        {
+          where: {
+            id: orderId,
+          },
+        },
+      );
+    } else {
+      res.status(200).json({ msg: 'Order status not updated', data: order });
+      return;
+    }
+
+    order = await Order.findOne({ where: { id: orderId } });
+    res.status(200).json({ msg: 'Payment Approved', data: order });
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      res.status(400).json({ msg: error.message });
+    } else {
+      res.status(500).json({ msg: error.message });
+    }
+  }
+};
+
+export const adminUpdatePackageSent = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const orderId = req.params.id;
+    let order = await Order.findOne({ where: { id: orderId } });
+    if (order.dataValues.status !== OrderStatus.ORDER_ON_PROCESS) throw new Error('Order not in shipping sent confirmation state');
+    const { approval } = req.body;
+
+    if (approval === true) {
+      const upd = await Order.update(
+        {
+          status: OrderStatus.ORDER_SENT,
+        },
+        {
+          where: {
+            id: orderId,
+          },
+        },
+      );
+    } else {
+      res.status(200).json({ msg: 'Order status not updated', data: order });
+      return;
+    }
+
+    order = await Order.findOne({ where: { id: orderId } });
+    res.status(200).json({ msg: 'Order status updated', data: order });
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      res.status(400).json({ msg: error.message });
+    } else {
+      res.status(500).json({ msg: error.message });
+    }
+  }
+};
+
+export const userConfirmPackageReceived = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const orderId = req.params.id;
+    let order = await Order.findOne({ where: { id: orderId } });
+    if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');
+    if (order.dataValues.status !== OrderStatus.ORDER_SENT) throw new Error('Order not in receive confirmation state');
+    const { approval } = req.body;
+
+    if (approval == true) {
+      const upd = await Order.update(
+        {
+          status: OrderStatus.ORDER_DONE,
+        },
+        {
+          where: {
+            id: orderId,
+          },
+        },
+      );
+    } else {
+      res.status(200).json({ msg: 'Order status not updated', data: order });
+      return;
+    }
+
+    order = await Order.findOne({ where: { id: orderId } });
+    res.status(200).json({ msg: 'Order status updated', data: order });
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      res.status(400).json({ msg: error.message });
+    } else {
+      res.status(500).json({ msg: error.message });
+    }
+  }
+};
