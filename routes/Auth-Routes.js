@@ -27,7 +27,7 @@ AuthRouter.get('/users/test', (req, res) => {
 }) 
 
 //Auth Route
-AuthRouter.get('/authusers', getUserLogin);
+AuthRouter.get('/authusers', verifyUser, getUserLogin);
 AuthRouter.post('/register', createUser);
 AuthRouter.post('/login', Login);
 AuthRouter.delete('/logout', Logout);

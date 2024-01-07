@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import User from "../models/UserModel.js"
+import User from "../models/User.js"
 
 //cek user login atau belum
 export const verifyUser = async (req, res, next) => {
