@@ -25,11 +25,35 @@ export const getProvinceById = async (id) => {
     }
 }
 
+export const getProvinces = async (id) => {
+    try {
+        const res = await rajaOngkirInstance("GET", "/province")
+        return res.data.rajaongkir?.results;
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 export const getCityById = async (id) => {
     try {
         const res = await rajaOngkirInstance("GET", "/city?id="+id)
         console.log("ct", res.data)
         return res.data.rajaongkir?.results?.city_name;
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const getCities = async (provinceId = null) => {
+    try {
+        let path = '/city'
+
+        if (provinceId) path += `?province=${provinceId}`
+
+        const res = await rajaOngkirInstance("GET",  path)
+        return res.data.rajaongkir?.results;
     } catch (error) {
         console.error(error)
         throw error

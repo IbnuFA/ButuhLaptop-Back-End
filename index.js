@@ -21,6 +21,7 @@ import AdminUserRoute from "./routes/admin/Admin-User-Route.js";
 import UserCartRoutes from "./routes/user/Cart-Routes.js";
 import UserOrderRouter from "./routes/user/Order-Routes.js";
 import AdminOrderRoute from "./routes/admin/Admin-Order-Route.js";
+import LogisticRoute from "./routes/Logistic-Routes.js";
 import Shipping from "./models/Shipping.js";
 
 dotenv.config()
@@ -91,6 +92,8 @@ app.use(UserOrderRouter)
 app.use(AdminProductRoute)
 app.use(AdminUserRoute)
 app.use(AdminOrderRoute)
+
+app.use(LogisticRoute);
 
 store.sync()
 
