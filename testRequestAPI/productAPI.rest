@@ -10,16 +10,16 @@ GET http://localhost:5000/products/c380ed6c-4897-46ea-9be9-6ebfd7591387
 
 ###
 // Create Products
-POST http://localhost:5000/products
+POST http://localhost:5000/admin/product
 Content-Type: application/json
 
 {
     "name": "Laptop coba 4",
     "description": "Intel I9, RAM 8GB",
-    "category": "gaming",
     "price": "1500000",
     "stock": "15",
-    "image": "qqq"
+    "image": "qqq",
+    "weight": "5"
 }
 
 

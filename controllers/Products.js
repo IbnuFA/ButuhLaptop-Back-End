@@ -1,4 +1,6 @@
 import Product from "../models/Product.js";
+import multer from "multer";
+
 import { ErrorResponseMessage, SuccessResponseMessage } from "../utils/response-message.js";
 
 
@@ -34,18 +36,20 @@ export const getProductsbyId  = async(req, res) => {
 }
 
 export const createProducts  = async(req, res) => {
-    const {name, description, price, stock, image, weight } = req.body;
+    const {name, description, price, stock, weight } = req.body;
+    // const {image} = req.file;
     try {
         const data = {
             name: name,
             description: description,
             price: price,
             stock: stock,
-            image: image,
-            weight,
+            // image: image,
+            weight: weight,
         }
-        await Product.create(data)
-        res.status(201).json({msg: SuccessResponseMessage[201], data })
+        console.log(req.file)
+        // await Product.create(data)
+        // res.status(201).json({msg: SuccessResponseMessage[201], data })
     } catch (error) {
         res.status(400).json({msg: error.message})
     }
