@@ -3,7 +3,6 @@ import User from "../models/User.js"
 
 //cek user login atau belum
 export const verifyUser = async (req, res, next) => {
-    console.log(req);
     const authHeader = req.headers['authorization']
     if (!authHeader || !authHeader?.startsWith('Bearer')) {
         return res.sendStatus(401)
