@@ -59,21 +59,22 @@ try {
 }
 
 //session
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: store,
-    cookie: {
-        secure: 'auto'
-    }
-}))
+// app.use(session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     store: store,
+//     cookie: {
+//         secure: 'auto'
+//     }
+// }))
 
 //FE request cookie + credentials
 app.use(cors({
     credentials: true,
     origin: [
         "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ],
 }))
 
