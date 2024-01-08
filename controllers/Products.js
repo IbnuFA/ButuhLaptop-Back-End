@@ -2,6 +2,7 @@ import Product from "../models/Product.js";
 import multer from "multer";
 
 import { ErrorResponseMessage, SuccessResponseMessage } from "../utils/response-message.js";
+import { uploadFile } from "../services/file-upload-service.js";
 
 
 export const getProducts  = async(req, res) => {
@@ -37,19 +38,18 @@ export const getProductsbyId  = async(req, res) => {
 
 export const createProducts  = async(req, res) => {
     const {name, description, price, stock, weight } = req.body;
-    // const {image} = req.file;
     try {
+        const image = await uploadFile(req.file, 'products');
         const data = {
             name: name,
             description: description,
             price: price,
             stock: stock,
-            // image: image,
+            image: image,
             weight: weight,
         }
-        console.log(req.file)
-        // await Product.create(data)
-        // res.status(201).json({msg: SuccessResponseMessage[201], data })
+        await Product.create(data)
+        res.status(201).json({msg: SuccessResponseMessage[201], data })
     } catch (error) {
         res.status(400).json({msg: error.message})
     }
@@ -65,7 +65,7 @@ export const updateProducts  = async(req, res) => {
     if(!product){
         return res.status(404).json({msg: ErrorResponseMessage[404]})
     } else{
-        const {name, description, category, price, stock, image } = req.body
+        const {name, description, category, price, stock, image } = req.body;
         try {
             const data = {
                 name: name,

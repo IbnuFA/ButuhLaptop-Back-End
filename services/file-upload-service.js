@@ -1,5 +1,21 @@
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getStorage, getDownloadURL  } from 'firebase-admin/storage';
+
+import serviceCert from '../butuh-laptop-firebase-adminsdk-o7lcc-d59cbc93c6.json' assert { type: "json" };;
+
+
 import multer from "multer";
 const upload = multer({ dest: 'uploads/' });
+
+import { customAlphabet } from 'nanoid'
+const nanoid = customAlphabet('1234567890abcdef', 10)
+
+export const firebaseApp = initializeApp({
+  credential: cert(serviceCert),
+  storageBucket: 'gs://butuh-laptop.appspot.com'
+});
+
+export const storage = getStorage();
 
 
 // Function to validate file
@@ -14,8 +30,14 @@ export async function validateFile(file, options) {
 }
   
 // Function to upload file
-export  async function uploadFile(file) {
-    // Implement your upload logic here (e.g., using a storage library)
-    // ...
-    return filename; // Replace with actual filename from upload logic
+export async function uploadFile(file, folderName = 'other') {
+    const fileExtension = file.originalname.split('.').slice(-1)
+    const filePath = `${folderName}/${nanoid()}.${fileExtension}`;
+
+    const fileRef = storage.bucket().file(filePath);
+
+    await fileRef.save(file.buffer);
+
+    const url = await getDownloadURL(fileRef);
+    return url;
 }
