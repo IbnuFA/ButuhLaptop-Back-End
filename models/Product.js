@@ -21,6 +21,12 @@ const Product = db.define('products', {
             notEmpty: true
         }
     },
+    category: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: true
+        },
+    },
     price: {
         type: DataTypes.BIGINT,
         validate: {

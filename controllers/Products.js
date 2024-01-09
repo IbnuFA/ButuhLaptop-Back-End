@@ -8,7 +8,7 @@ import { uploadFile } from "../services/file-upload-service.js";
 export const getProducts  = async(req, res) => {
     try {
         const response = await Product.findAll({
-            attributes: ['id', 'name', 'description', 'price', 'stock', 'image', 'weight'],
+            attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image', 'weight'],
         })
         res.status(200).json(response);
     } catch (error) {
@@ -20,7 +20,7 @@ export const getProducts  = async(req, res) => {
 export const getProductsbyId  = async(req, res) => {
     try {
         const product = await Product.findOne({
-            attributes: ['id', 'name', 'description', 'price', 'stock', 'image', 'weight'],
+            attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image', 'weight'],
             where:{
                 id: req.params.id
             }
@@ -37,12 +37,13 @@ export const getProductsbyId  = async(req, res) => {
 }
 
 export const createProducts  = async(req, res) => {
-    const {name, description, price, stock, weight } = req.body;
+    const {name, description, category, price, stock, weight } = req.body;
     try {
         const image = await uploadFile(req.file, 'products');
         const data = {
             name: name,
             description: description,
+            category: category,
             price: price,
             stock: stock,
             image: image,
