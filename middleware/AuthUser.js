@@ -11,19 +11,32 @@ export const verifyUser = async (req, res, next) => {
   
     if (!token) return res.sendStatus(401)
 
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
    
-    const user = await User.findOne({
-        where: {
-            uuid: decodedToken.uuid
-        }
-    })
+        const user = await User.findOne({
+            where: {
+                uuid: decodedToken.uuid
+            }
+        })
 
-    if(!user){
-        return res.status(404).json({msg: "User tidak ditemukan"})
-    } else {
-        req.user = user.dataValues
-        next()
+        if(!user){
+            return res.status(404).json({msg: "User tidak ditemukan"})
+        } else {
+            req.user = user.dataValues
+            next()
+        }
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            return res.status(401).json({ msg: 'Token expired.' });
+        }
+
+        if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json({ msg: 'Token error.', error_message: error.message });
+        }
+
+        console.log(error);
+        return res.status(500).json({ msg: 'Internal Server Error '});
     }
 }
 
