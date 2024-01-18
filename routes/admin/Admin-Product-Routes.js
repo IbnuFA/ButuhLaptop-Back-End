@@ -37,7 +37,7 @@ AdminProductRoute.get('/products/admin/test', (req, res) => {
 AdminProductRoute.get('/admin/products', verifyUser, adminOnly, getProducts);
 AdminProductRoute.get('/admin/product/:id', verifyUser, adminOnly, getProductsbyId);
 AdminProductRoute.post('/admin/product', verifyUser, adminOnly, upload.single('image'), createProducts);
-AdminProductRoute.patch('/admin/product/:id', verifyUser, adminOnly, updateProducts);
+AdminProductRoute.patch('/admin/product/:id', verifyUser, adminOnly, upload.single('image'), updateProducts);
 AdminProductRoute.delete('/admin/product/:id', verifyUser, adminOnly, deleteProducts);
 
 export default AdminProductRoute;

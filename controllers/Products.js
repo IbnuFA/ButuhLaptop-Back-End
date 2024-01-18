@@ -2,14 +2,23 @@ import Product from "../models/Product.js";
 import multer from "multer";
 
 import { ErrorResponseMessage, SuccessResponseMessage } from "../utils/response-message.js";
-import { uploadFile } from "../services/file-upload-service.js";
+import { uploadFile, getFileURL, deleteFile } from "../services/file-upload-service.js";
 
 
 export const getProducts  = async(req, res) => {
     try {
-        const response = await Product.findAll({
+        let response = await Product.findAll({
             attributes: ['id', 'name', 'description', 'category', 'price', 'stock', 'image', 'weight'],
         })
+        response = response.map(({ dataValues }) => dataValues);
+        response = await Promise.all(response.map(async (product) => {
+            const imageURL = await getFileURL(product.image);
+            
+            return {
+                ...product,
+                image: imageURL
+            };
+        }));
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json({msg: error.message})
@@ -29,7 +38,13 @@ export const getProductsbyId  = async(req, res) => {
             res.status(400).json({msg: ErrorResponseMessage[404]})
             return 
         }
-        res.status(200).json(product)
+
+        const imageURL = await getFileURL(product.image);
+            
+        res.status(200).json({
+            ...product.dataValues,
+            image: imageURL
+        });
     } catch (error) {
         res.status(500).json({msg: error.message})
         console.log(error)
@@ -49,8 +64,14 @@ export const createProducts  = async(req, res) => {
             image: image,
             weight: weight,
         }
-        await Product.create(data)
-        res.status(201).json({msg: SuccessResponseMessage[201], data })
+        await Product.create(data);
+
+        const imageURL = await getFileURL(data.image);
+        
+        res.status(201).json({msg: SuccessResponseMessage[201], data: {
+            ...data,
+            image: imageURL,
+        } })
     } catch (error) {
         res.status(400).json({msg: error.message})
     }
@@ -66,7 +87,8 @@ export const updateProducts  = async(req, res) => {
     if(!product){
         return res.status(404).json({msg: ErrorResponseMessage[404]})
     } else{
-        const {name, description, category, price, stock, image } = req.body;
+        const {name, description, category, price, stock } = req.body;
+
         try {
             const data = {
                 name: name,
@@ -74,14 +96,28 @@ export const updateProducts  = async(req, res) => {
                 category: category,
                 price: price,
                 stock: stock,
-                image: image
+            }
+
+            let imageURL;
+            if (req.file) {
+                const image = await uploadFile(req.file, 'products');
+                data.image = image;
+                imageURL = await getFileURL(data.image);
+            } else {
+                imageURL = await getFileURL(product.dataValues.image);
             }
             const updRes = await Product.update(data,{
                 where:{
                     id: product.id
                 }
             })
-            res.status(200).json({msg: SuccessResponseMessage[200], data})
+
+            await deleteFile(product.dataValues.image);
+
+            res.status(200).json({msg: SuccessResponseMessage[200], data: {
+                ...data,
+                image: imageURL,
+            }})
         } catch (error) {
             res.status(400).json({msg: error.message})
         }
@@ -104,6 +140,8 @@ export const deleteProducts  = async(req, res) => {
                     id: product.id
                 }
             })
+            await deleteFile(product.dataValues.image);
+
             res.status(200).json({msg: SuccessResponseMessage[200]})
         } catch (error) {
             res.status(400).json({msg: error.message})

@@ -1,7 +1,7 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getStorage, getDownloadURL  } from 'firebase-admin/storage';
 
-import serviceCert from '../butuh-laptop-firebase-adminsdk-o7lcc-d59cbc93c6.json' assert { type: "json" };;
+import serviceCert from '../butuh-laptop-firebase-adminsdk-o7lcc-d59cbc93c6.json' assert { type: "json" };
 
 
 import multer from "multer";
@@ -38,6 +38,21 @@ export async function uploadFile(file, folderName = 'other') {
 
     await fileRef.save(file.buffer);
 
-    const url = await getDownloadURL(fileRef);
-    return url;
+    return filePath;
+}
+
+export async function deleteFile(filePath) {
+
+  const fileRef = storage.bucket().file(filePath);
+
+  await fileRef.delete();
+
+  return 'success';
+}
+
+export async function getFileURL(filePath) {
+  const fileRef = storage.bucket().file(filePath);
+  const url = await getDownloadURL(fileRef);
+
+  return url;
 }
