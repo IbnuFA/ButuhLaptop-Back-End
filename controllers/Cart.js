@@ -5,11 +5,12 @@ import {
   ErrorResponseMessage,
   SuccessResponseMessage,
 } from '../utils/response-message.js';
+import { getFileURL,  } from "../services/file-upload-service.js";
 
 //done
 export const getCartByUser = async (req, res) => {
   try {
-    const cart = await Cart.findAll({
+    let cart = await Cart.findAll({
       where: { userUuid: req.user.uuid },
       include: [
         {
@@ -22,6 +23,24 @@ export const getCartByUser = async (req, res) => {
         },
       ],
     });
+    cart = cart.map(({ dataValues }) => dataValues);
+    cart = await Promise.all(cart.map(async (item) => {
+      let imageURL;
+      try {
+          imageURL = await getFileURL(item.product.dataValues.image);
+      } catch (error) {
+        console.log(error)
+          imageURL = item.product.dataValues.image;
+      }
+
+      return {
+        ...item,
+        product: {
+          ...item.product.dataValues,
+          image: imageURL,
+        },
+      }
+    }));
     res.status(200).json({ msg: SuccessResponseMessage[200], data: cart });
   } catch (error) {
     console.error(error);

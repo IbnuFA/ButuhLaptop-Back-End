@@ -117,7 +117,9 @@ export const updateProducts  = async(req, res) => {
                 }
             })
 
-            await deleteFile(product.dataValues.image);
+            if (req.file) {
+                await deleteFile(product.dataValues.image);
+            }
 
             res.status(200).json({msg: SuccessResponseMessage[200], data: {
                 ...data,
