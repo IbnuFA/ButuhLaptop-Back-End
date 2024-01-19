@@ -12,7 +12,12 @@ export const getProducts  = async(req, res) => {
         })
         response = response.map(({ dataValues }) => dataValues);
         response = await Promise.all(response.map(async (product) => {
-            const imageURL = await getFileURL(product.image);
+            let imageURL;
+            try {
+                imageURL = await getFileURL(product.image);
+            } catch (error) {
+                imageURL = product.image;
+            }
             
             return {
                 ...product,

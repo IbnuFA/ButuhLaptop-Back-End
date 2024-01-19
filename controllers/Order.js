@@ -14,7 +14,7 @@ const upload = multer({ dest: 'uploads/' });
 
 export const getMyOrders = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
     let orders = await Order.findAll({
       attributes: ['id', 'products_price', 'total_price', 'currency', 'status', 'payment_prove', 'createdAt', 'updatedAt'],
       where: { userUuid: userId },
@@ -93,7 +93,7 @@ const checkOrderPricing = async (userId) => {
 
 export const checkOrder = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
 
     res.status(200).json({ msg: SuccessResponseMessage[200], data: await checkOrderPricing(userId) });
   } catch (error) {
@@ -104,7 +104,7 @@ export const checkOrder = async (req, res) => {
 
 export const createOrder = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
     //get all users products in cart
     const co = await checkOrderPricing(userId);
     //status order: 0 (need admin input), 1 (approved), 2 (customer payment), 3 (payment approval on admin), 4(sent), 9(expired)
@@ -135,7 +135,7 @@ export const createOrder = async (req, res) => {
 
 export const adminAcceptOrder = async (req, res) => {
   try {
-    const adminId = req.session.userId;
+    const adminId = req.user.uuid;
     const orderId = req.params.id;
     const { approval } = req.body;
     const order = await Order.findOne({ where: { id: orderId } });
@@ -157,7 +157,7 @@ export const adminAcceptOrder = async (req, res) => {
 
 export const adminFillShippingInfo = async (req, res) => {
   try {
-    const adminId = req.session.userId;
+    const adminId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId }, include: { model: User } });
     if (order.dataValues.status != OrderStatus.ORDER_ACCEPTED) throw Error('Order state is not need to fill shipping info');
@@ -196,7 +196,7 @@ export const adminFillShippingInfo = async (req, res) => {
 
 export const payOrder = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId } });
     if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');
@@ -233,7 +233,7 @@ export const payOrder = async (req, res) => {
 
 export const adminVerifyPaymentOrder = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId } });
     if (order.dataValues.status !== OrderStatus.ORDER_PAYED) throw new Error('Order not in payment confirmation state');
@@ -268,7 +268,7 @@ export const adminVerifyPaymentOrder = async (req, res) => {
 
 export const adminUpdatePackageSent = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId } });
     if (order.dataValues.status !== OrderStatus.ORDER_ON_PROCESS) throw new Error('Order not in shipping sent confirmation state');
@@ -303,7 +303,7 @@ export const adminUpdatePackageSent = async (req, res) => {
 
 export const userConfirmPackageReceived = async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId } });
     if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');

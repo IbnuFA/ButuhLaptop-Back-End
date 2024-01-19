@@ -10,7 +10,7 @@ import {
 export const getCartByUser = async (req, res) => {
   try {
     const cart = await Cart.findAll({
-      where: { userUuid: req.session.userId },
+      where: { userUuid: req.user.uuid },
       include: [
         {
           model: Product,
@@ -32,7 +32,7 @@ export const getCartByUser = async (req, res) => {
 
 export const addProductToCart = async (req, res) => {
   const { product_id, quantity } = req.body;
-  const userId = req.session.userId
+  const userId = req.user.uuid
   //find product in product table
   const product = await Product.findOne({ where: { id: product_id } });
   if (!product) {
@@ -60,7 +60,7 @@ export const addProductToCart = async (req, res) => {
       })
     } else {
       const data = {
-        userUuid: req.session.userId,
+        userUuid: req.user.uuid,
         productId: product.dataValues.id,
         quantity,
         status: 0,
@@ -78,14 +78,26 @@ export const addProductToCart = async (req, res) => {
 };
 
 //TODO: test
-export const removeItemCart = async (req, res) => {
-    try {
-      const findCart = await Cart.findOne({ where: { id: req.params.id } });
-      if (!findCart) {
-        res.status(404).json({ msg: ErrorResponseMessage[404] });
-        return;
-      }
-    await Cart.destroy({ where: { id: req.params.id } });
+export const removeProductFromCart = async (req, res) => {
+  try {
+    const userId = req.user.uuid;
+    const findCart = await Cart.findOne({
+      where: {userUuid: userId, productId: req.params.id}
+    });
+    if (!findCart) {
+      return res.status(404).json({ msg: ErrorResponseMessage[404] });
+    }
+
+    if(findCart.dataValues.quantity === 1) {
+      await Cart.destroy({ where: { id: findCart.dataValues.id } });
+    } else {
+      await Cart.update({
+        quantity: findCart.dataValues.quantity - 1
+      }, {
+        where: {id: findCart.dataValues.id}
+      })
+    }
+
     res.status(200).json({ msg: SuccessResponseMessage[200] });
   } catch (error) {
     console.error(error);
