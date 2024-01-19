@@ -89,10 +89,10 @@ export const addProductToCart = async (req, res) => {
     let finalProductCart = await Cart.findOne({
       where: {userUuid: userId, productId: product_id}
     });
-    res.status(201).json({ msg: SuccessResponseMessage[201], data: finalProductCart.dataValues });
+    return res.status(201).json({ msg: SuccessResponseMessage[201], data: finalProductCart.dataValues });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: error.message });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
