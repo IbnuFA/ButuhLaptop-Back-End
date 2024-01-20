@@ -15,9 +15,9 @@ router.get('/feedbacks/test', (req, res) => {
 }) 
 
 router.get('/feedbacks', getFeedbacks);
-router.get('/feedbacks/:id', getFeedbacksbyId);
-router.post('/feedbacks', createFeedbacks);
-router.patch('/feedbacks/:id', updateFeedbacks);
-router.delete('/feedbacks/:id', deleteFeedbacks);
+router.get('/feedback/:id', getFeedbacksbyId);
+router.post('/feedback', createFeedbacks);
+router.patch('/feedback/:id', updateFeedbacks);
+router.delete('/feedback/:id', deleteFeedbacks);
 
 export default router
