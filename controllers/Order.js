@@ -12,6 +12,36 @@ import { OrderStatus } from '../utils/global.js';
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 
+export const getAllOrders = async (req, res) => {
+  try {
+    let orders = await Order.findAll({
+      attributes: ['id', 'products_price', 'total_price', 'currency', 'status', 'payment_prove', 'createdAt', 'updatedAt'],
+      order: [['status', 'ASC']],
+      include: [
+        {
+          model: User,
+          attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
+        },
+        {
+          model: OrderDetail,
+          attributes: ['id'],
+          include: [
+            {
+              model: Product,
+              attributes: ['id', 'name', 'price', 'image', 'description', 'weight'],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json({ msg: SuccessResponseMessage[200], data: orders });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 export const getMyOrders = async (req, res) => {
   try {
     const userId = req.user.uuid;
