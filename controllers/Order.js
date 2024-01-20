@@ -107,8 +107,64 @@ const checkOrderPricing = async (userId) => {
   for (const cartData of userCarts) {
     const cart = cartData.dataValues;
     summary.products_price += cart.quantity * cart.product.price;
-    summary.products.push(cart.product);
+    summary.products.push({
+      ...cart.product.dataValues,
+      quantity: cart.quantity
+    });
     summary.total_weight += cart.product.weight;
+  }
+  const shippings = await getShippingCost(user.city_id, summary.total_weight);
+  // console.log(shippings)
+  summary.shippings = shippings;
+  let costs = shippings.services.map((s) => +s.cost);
+  // console.log({costs, min: Math.min(...[4000, 7000])})
+  summary.estimated_total_price_min = Math.min(...costs) + summary.products_price;
+  summary.estimated_total_price_max = Math.max(...costs) + summary.products_price;
+
+  return summary;
+};
+
+const checkOrderPricingByOrder = async (orderId) => {
+  const orders = await Order.findOne({
+    where: { id: orderId },
+    include: [
+      {
+        model: OrderDetail,
+        include: [
+          {
+            model: Product,
+          },
+        ]
+      },
+      {
+        model: User,
+        attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
+      },
+    ],
+  });
+  // return orders
+  if (!orders) {
+    throw Error;
+  }
+  const user = orders.dataValues.user;
+
+  let summary = {
+    total_weight: 0,
+    currency: 'IDR',
+    products_price: 0,
+    estimated_total_price_min: 0,
+    estimated_total_price_max: 0,
+    products: [],
+    shippings: {},
+  };
+
+  for (const orderData of orders.dataValues.order_details) {
+    const order = orderData.dataValues;
+    const product = orderData.dataValues.product.dataValues;
+    console.log({order, product})
+    summary.products_price += order.quantity * order.product.price;
+    summary.products.push(order.product);
+    summary.total_weight += order.product.weight;
   }
   const shippings = await getShippingCost(user.city_id, summary.total_weight);
   // console.log(shippings)
@@ -123,6 +179,12 @@ const checkOrderPricing = async (userId) => {
 
 export const checkOrder = async (req, res) => {
   try {
+    const orderId = req.query.orderId;
+    if (orderId) {
+      const data = await checkOrderPricingByOrder(orderId);
+      return res.status(200).json({ msg: SuccessResponseMessage[200], data });
+    }
+
     const userId = req.user.uuid;
 
     res.status(200).json({ msg: SuccessResponseMessage[200], data: await checkOrderPricing(userId) });
@@ -150,6 +212,7 @@ export const createOrder = async (req, res) => {
       let temp = await OrderDetail.create({
         productId: item.id,
         orderId: order.dataValues.id,
+        quantity: item.quantity
       });
       orderDetails.push(temp);
     }
@@ -213,7 +276,7 @@ export const adminFillShippingInfo = async (req, res) => {
     const updOrder = await order.update({
       shippingId: shipping.dataValues.id,
       total_price: order.dataValues.products_price + shipping_price,
-      status: OrderStatus.ORDER_ON_PROCESS,
+      status: OrderStatus.ORDER_NEEDS_PAYMENT,
     });
 
     order = await Order.findOne({ where: { id: orderId }, include: { model: Shipping } });

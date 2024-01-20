@@ -58,7 +58,7 @@ export const updateFeedbacks  = async(req, res) => {
                 rate: rate
             },{
                 where:{
-                    id: feedbacks.id
+                    id: feedbacks.feedback_id
                 }
             })
             res.status(201).json({msg: "feedback telah diupdate"})
@@ -79,7 +79,7 @@ export const deleteFeedbacks  = async(req, res) => {
         try {
             await Feedbacks.destroy({
                 where:{
-                    id: feedbacks.id
+                    id: feedbacks.feedback_id
                 }
             })
             res.status(201).json({msg: "feedback telah dihapus"})

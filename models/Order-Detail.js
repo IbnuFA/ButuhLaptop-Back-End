@@ -11,6 +11,9 @@ const OrderDetail = db.define('order_details', {
         autoIncrement: true,
         primaryKey: true,
     },
+    quantity: {
+        type: DataTypes.INTEGER,
+    }
 })
 
 Product.hasMany(OrderDetail);
