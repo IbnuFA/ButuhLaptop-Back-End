@@ -10,6 +10,8 @@ import Shipping from '../models/Shipping.js';
 import { ValidationError } from 'sequelize';
 import { OrderStatus } from '../utils/global.js';
 import multer from 'multer';
+import { getFileURL, uploadFile } from "../services/file-upload-service.js";
+
 const upload = multer({ dest: 'uploads/' });
 
 export const getAllOrders = async (req, res) => {
@@ -35,6 +37,33 @@ export const getAllOrders = async (req, res) => {
       ],
     });
 
+    orders = orders.map(({ dataValues }) => {
+      const user = dataValues.user.dataValues;
+
+      const order_details = dataValues.order_details.map(({ dataValues: order_details }) => {
+      const product = order_details.product.dataValues;
+      return {
+          ...order_details,
+          product,
+        };
+      })
+
+      return {
+        ...dataValues,
+        user,
+        order_details,
+      }
+    });
+
+    orders = await Promise.all(orders.map(async (order) => {
+      if (order.payment_prove) {
+        const payment_prove = await getFileURL(order.payment_prove);
+        order.payment_prove = payment_prove;
+      }
+
+      return order;
+    }));
+
     res.status(200).json({ msg: SuccessResponseMessage[200], data: orders });
   } catch (error) {
     console.error(error);
@@ -45,18 +74,25 @@ export const getAllOrders = async (req, res) => {
 export const getMyOrders = async (req, res) => {
   try {
     const userId = req.user.uuid;
+    
+    const whereParams = { userUuid: userId };
+
+    if (req.query.orderId) {
+      whereParams.id = req.query.orderId;
+    }
+
     let orders = await Order.findAll({
       attributes: ['id', 'products_price', 'total_price', 'currency', 'status', 'payment_prove', 'createdAt', 'updatedAt'],
-      where: { userUuid: userId },
+      where: whereParams,
       order: [['status', 'ASC']],
       include: [
         {
           model: User,
-          attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code'],
+          attributes: ['uuid', 'first_name', 'last_name', 'role', 'email', 'city_id', 'province_id', 'postal_code', 'address'],
         },
         {
           model: OrderDetail,
-          attributes: ['id'],
+          attributes: ['id', 'quantity'],
           include: [
             {
               model: Product,
@@ -66,6 +102,39 @@ export const getMyOrders = async (req, res) => {
         },
       ],
     });
+
+    orders = await Promise.all(orders.map(async ({dataValues: order}) => {
+      if (order.payment_prove) {
+        const payment_prove = await getFileURL(order.payment_prove);
+        order.payment_prove = payment_prove;
+      }
+      let order_details = order.order_details.map((({ dataValues }) => dataValues));
+
+      order_details = await Promise.all(order_details.map(async (order_detail) => {
+        const product = order_detail.product.dataValues;
+
+        let imageURL;
+        try {
+            imageURL = await getFileURL(product.image);
+        } catch (error) {
+            imageURL = product.image;
+        }
+
+        return {
+          ...order_detail,
+          product: {
+            ...product,
+            image: imageURL,
+          },
+        }
+      }));
+
+      return {
+        ...order,
+        user: order.user.dataValues,
+        order_details,
+      };
+    }));
 
     res.status(200).json({ msg: SuccessResponseMessage[200], data: orders });
   } catch (error) {
@@ -295,15 +364,13 @@ export const payOrder = async (req, res) => {
     if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');
     if (order.dataValues.status != OrderStatus.ORDER_NEEDS_PAYMENT) throw Error('Order state is not need payment');
 
-    let filename = '';
 
     const uploadedFile = req.file;
-    if (!['image/jpeg', 'image/png', 'image/jpeg'].includes(uploadedFile.mimetype)) {
-      throw new ValidationError('Only JPEG, JPG, and PNG are allowed!');
+    if (!['image/jpeg', 'image/png', 'image/jpeg', 'image/gif'].includes(uploadedFile.mimetype)) {
+      throw new ValidationError('Only JPEG, JPG, GIF, and PNG are allowed!');
     }
 
-    console.log({ uploadedFile });
-    filename = uploadedFile.filename;
+    const filename = await uploadFile(req.file, 'payments');
 
     const upd = await Order.update(
       {
@@ -316,6 +383,7 @@ export const payOrder = async (req, res) => {
     order = await Order.findOne({ where: { id: orderId } });
     res.status(200).json({ msg: 'File uploaded successfully!', data: order });
   } catch (error) {
+    console.log(error);
     if (error instanceof ValidationError) {
       res.status(400).json({ msg: error.message });
     } else {
@@ -399,6 +467,7 @@ export const userConfirmPackageReceived = async (req, res) => {
     const userId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId } });
+    console.log(order.dataValues.status)
     if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');
     if (order.dataValues.status !== OrderStatus.ORDER_SENT) throw new Error('Order not in receive confirmation state');
     const { approval } = req.body;
