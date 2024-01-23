@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyUser } from '../../middleware/AuthUser.js';
-import { checkOrder, createOrder, getMyOrders, payOrder, userConfirmPackageReceived } from '../../controllers/Order.js';
+import { checkOrder, createOrder, createOrderFromProduct, getMyOrders, payOrder, userConfirmPackageReceived } from '../../controllers/Order.js';
 import multer from 'multer';
 // const upload = multer({ dest: 'uploads/' });
 const upload = multer({
@@ -20,6 +20,7 @@ const UserOrderRouter = express.Router();
 UserOrderRouter.get('/order/me/list', verifyUser, getMyOrders);
 UserOrderRouter.get('/order/check', verifyUser, checkOrder);
 UserOrderRouter.post('/order', verifyUser, createOrder);
+UserOrderRouter.post('/order/product', verifyUser, createOrderFromProduct);
 UserOrderRouter.put('/order/payment/:id', verifyUser, upload.single('file'), payOrder);
 UserOrderRouter.put('/order/confirmation/receive/:id', verifyUser, userConfirmPackageReceived);
 // UserOrderRouter.delete('/cart/:id', verifyUser, removeItemCart);

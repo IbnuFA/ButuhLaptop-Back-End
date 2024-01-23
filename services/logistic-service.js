@@ -62,6 +62,7 @@ export const getCities = async (provinceId = null) => {
 
 export const getShippingCost = async (city_id, weight) => {
     try {
+        console.log(city_id, weight)
         const res = await axios.post(process.env.RAJAONGKIR_URL + "/cost", {
             origin: process.env.SHOP_CITY_ID,
             destination: city_id,

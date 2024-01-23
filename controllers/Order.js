@@ -164,6 +164,7 @@ const checkOrderPricing = async (userId) => {
   const user = userCarts[0].dataValues.user;
 
   let summary = {
+    cart_id: userCarts[0].dataValues.id,
     total_weight: 0,
     currency: 'IDR',
     products_price: 0,
@@ -246,15 +247,58 @@ const checkOrderPricingByOrder = async (orderId) => {
   return summary;
 };
 
+const checkOrderPricingByProduct = async (productId, userId) => {
+  const product = await Product.findOne({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const user = await User.findOne({
+    where: {
+      uuid: userId,
+    }
+  });
+
+  let summary = {
+    total_weight: product.dataValues.weight,
+    currency: 'IDR',
+    products_price: product.dataValues.price,
+    estimated_total_price_min: 0,
+    estimated_total_price_max: 0,
+    products: [product.dataValues],
+    shippings: {},
+  };
+
+  const shippings = await getShippingCost(user.dataValues.city_id, summary.total_weight);
+  // console.log(shippings)
+  summary.shippings = shippings;
+  let costs = shippings.services.map((s) => +s.cost);
+  // console.log({costs, min: Math.min(...[4000, 7000])})
+  summary.estimated_total_price_min = Math.min(...costs) + summary.products_price;
+  summary.estimated_total_price_max = Math.max(...costs) + summary.products_price;
+
+  return summary;
+};
+
 export const checkOrder = async (req, res) => {
   try {
+    const userId = req.user.uuid;
     const orderId = req.query.orderId;
     if (orderId) {
       const data = await checkOrderPricingByOrder(orderId);
       return res.status(200).json({ msg: SuccessResponseMessage[200], data });
     }
 
-    const userId = req.user.uuid;
+    const productId = req.query.productId;
+    if (productId) {
+      const data = await checkOrderPricingByProduct(productId, userId);
+      return res.status(200).json({ msg: SuccessResponseMessage[200], data });
+    }
 
     res.status(200).json({ msg: SuccessResponseMessage[200], data: await checkOrderPricing(userId) });
   } catch (error) {
@@ -286,9 +330,54 @@ export const createOrder = async (req, res) => {
       orderDetails.push(temp);
     }
 
-    await Cart.destroy({ where: { userUuid: userId } });
+    await Cart.destroy({ where: { id: co.cart_id } });
 
     res.status(200).json({ msg: SuccessResponseMessage[200], data: { order, detail: orderDetails } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+export const createOrderFromProduct = async (req, res) => {
+  try {
+    const userId = req.user.uuid;
+    const product_id = req.body?.product_id;
+
+    if (!product_id) {
+      throw new Error('Product Id needed.')
+    }
+
+    //get all users products in cart
+    const product = await Product.findOne({
+      where: {
+        id: product_id,
+      }
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    if ((product.dataValues.stock - 1) < 0) {
+      throw new Error('Product is out of stock')
+    }
+
+    //status order: 0 (need admin input), 1 (approved), 2 (customer payment), 3 (payment approval on admin), 4(sent), 9(expired)
+    const order = await Order.create({
+      products_price: product.dataValues.price,
+      currency: 'IDR',
+      status: OrderStatus.ORDER_PLACED,
+      userUuid: userId,
+    });
+
+    let orderDetails = await OrderDetail.create({
+      productId: product_id,
+      orderId: order.dataValues.id,
+      quantity: 1
+    });
+
+    res.status(200).json({ msg: SuccessResponseMessage[200], data: { order, detail: [orderDetails] } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
