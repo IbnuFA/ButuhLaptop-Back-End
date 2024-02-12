@@ -26,7 +26,32 @@ import Shipping from "./models/Shipping.js";
 
 dotenv.config()
 
-var app = express()
+const app = express()
+
+//session
+// app.use(session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     store: store,
+//     cookie: {
+//         secure: 'auto'
+//     }
+// }))
+
+//FE request cookie + credentials
+app.use(cors({
+    credentials: true,
+    origin: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+}))
+
+// app.use(cors())
+app.use(express.json())
+app.use(express.static('public'))
 
 //session storage
 const sessionStore = SequelizeStore(session.Store)
@@ -58,29 +83,7 @@ try {
     console.error(`Error => ${err}`);
 }
 
-//session
-// app.use(session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: true,
-//     store: store,
-//     cookie: {
-//         secure: 'auto'
-//     }
-// }))
 
-//FE request cookie + credentials
-app.use(cors({
-    credentials: true,
-    origin: [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
-}))
-
-app.use(express.json())
-app.use(express.static('public'))
 //route auth
 app.use(AuthRouter)
 

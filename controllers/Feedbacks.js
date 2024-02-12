@@ -45,7 +45,6 @@ export const updateFeedbacks  = async(req, res) => {
             feedback_id: req.params.id
         }
     })
-    console.log(req.params)
 
     if(!feedbacks){
         return res.status(404).json({msg: "feedbacks tidak ditemukan"})

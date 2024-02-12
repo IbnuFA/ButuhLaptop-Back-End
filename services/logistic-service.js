@@ -38,7 +38,7 @@ export const getProvinces = async (id) => {
 export const getCityById = async (id) => {
     try {
         const res = await rajaOngkirInstance("GET", "/city?id="+id)
-        console.log("ct", res.data)
+        // console.log("ct", res.data)
         return res.data.rajaongkir?.results?.city_name;
     } catch (error) {
         console.error(error)
@@ -62,7 +62,7 @@ export const getCities = async (provinceId = null) => {
 
 export const getShippingCost = async (city_id, weight) => {
     try {
-        console.log(city_id, weight)
+        // console.log(city_id, weight)
         const res = await axios.post(process.env.RAJAONGKIR_URL + "/cost", {
             origin: process.env.SHOP_CITY_ID,
             destination: city_id,
@@ -75,7 +75,7 @@ export const getShippingCost = async (city_id, weight) => {
         })
         const availCouriers = res.data.rajaongkir.results
         const options = availCouriers.map((c) => {
-            console.log(c)
+            // console.log(c)
             return {
                 provider: c.code,
                 provider_name: c.name,

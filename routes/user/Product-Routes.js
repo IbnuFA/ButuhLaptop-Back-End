@@ -16,7 +16,7 @@ ProductRouter.get('/products/test', (req, res) => {
   res.send("Test Router Products")
 }) 
 
-ProductRouter.get('/products', verifyUser, getProducts);
-ProductRouter.get('/products/:id', verifyUser, getProductsbyId);
+ProductRouter.get('/products', getProducts);
+ProductRouter.get('/products/:id', getProductsbyId);
 
 export default ProductRouter;

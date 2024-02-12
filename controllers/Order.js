@@ -164,7 +164,7 @@ const checkOrderPricing = async (userId) => {
   const user = userCarts[0].dataValues.user;
 
   let summary = {
-    cart_id: userCarts[0].dataValues.id,
+    cart_id: userId,
     total_weight: 0,
     currency: 'IDR',
     products_price: 0,
@@ -231,7 +231,6 @@ const checkOrderPricingByOrder = async (orderId) => {
   for (const orderData of orders.dataValues.order_details) {
     const order = orderData.dataValues;
     const product = orderData.dataValues.product.dataValues;
-    console.log({order, product})
     summary.products_price += order.quantity * order.product.price;
     summary.products.push(order.product);
     summary.total_weight += order.product.weight;
@@ -313,6 +312,7 @@ export const createOrder = async (req, res) => {
     //get all users products in cart
     const co = await checkOrderPricing(userId);
     //status order: 0 (need admin input), 1 (approved), 2 (customer payment), 3 (payment approval on admin), 4(sent), 9(expired)
+    console.log(co)
     const order = await Order.create({
       products_price: co.products_price,
       currency: co.currency,
@@ -321,16 +321,16 @@ export const createOrder = async (req, res) => {
     });
 
     let orderDetails = [];
-    for (const item of co.products) {
+    await Promise.all(co.products.map(async (item) => {
       let temp = await OrderDetail.create({
         productId: item.id,
         orderId: order.dataValues.id,
         quantity: item.quantity
       });
       orderDetails.push(temp);
-    }
+    }));
 
-    await Cart.destroy({ where: { id: co.cart_id } });
+    await Cart.destroy({ where: { userUuid: co.cart_id } });
 
     res.status(200).json({ msg: SuccessResponseMessage[200], data: { order, detail: orderDetails } });
   } catch (error) {
@@ -556,7 +556,6 @@ export const userConfirmPackageReceived = async (req, res) => {
     const userId = req.user.uuid;
     const orderId = req.params.id;
     let order = await Order.findOne({ where: { id: orderId } });
-    console.log(order.dataValues.status)
     if (!order || order.dataValues.userUuid !== userId) throw new Error('Order not found');
     if (order.dataValues.status !== OrderStatus.ORDER_SENT) throw new Error('Order not in receive confirmation state');
     const { approval } = req.body;
